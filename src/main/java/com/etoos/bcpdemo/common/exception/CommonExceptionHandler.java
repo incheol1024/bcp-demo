@@ -1,6 +1,8 @@
 package com.etoos.bcpdemo.common.exception;
 
+import com.etoos.bcpdemo.common.model.CommonModel;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bytecode.assign.primitive.PrimitiveUnboxingDelegate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.util.Objects;
 
 @Slf4j
@@ -20,7 +23,6 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(NotFoundException exception, WebRequest webRequest) {
         log.error("{} \r\n {}", exception, webRequest);
-
         return this.handleExceptionInternal(exception, null, new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
     }
 
@@ -28,23 +30,30 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CommonException.class)
     public ResponseEntity handleCommonException(CommonException commonException, WebRequest webRequest) {
         log.error("{} \r\n {}", commonException.getStackTrace(), webRequest);
-        DemoErrorMessage errorMessage = commonException.getErrorMessage();
-        return handleExceptionInternal(commonException, errorMessage.getMessage(), new HttpHeaders(), errorMessage.getStatus(), webRequest);
+        CommonModel commonModel = commonException.getCommonModel();
+        return handleExceptionInternal(commonException, commonModel, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
     }
 
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity handleRuntimeException(RuntimeException runtimeException, WebRequest webRequest) {
         log.error("{} \r\n {}", runtimeException, webRequest);
-        return this.handleExceptionInternal(runtimeException, runtimeException.getMessage(), null, null, webRequest);
+        Object body = null;
+
+        if (runtimeException instanceof CommonException) {
+            runtimeException = (CommonException) runtimeException;
+            body = ((CommonException) runtimeException).getCommonModel();
+        } else {
+            body = runtimeException.getMessage();
+        }
+
+        return this.handleExceptionInternal(runtimeException, body, null, HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
     }
 
 
-
     @Override
-    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-        return this.handleExceptionInternal(ex, ex.getAllErrors(), headers, status, request);
+    protected ResponseEntity<Object> handleBindException(BindException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return this.handleExceptionInternal(exception, exception.getMessage(), headers, status, request);
     }
 
     @Override
@@ -54,8 +63,6 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
-
-
 
 
 }

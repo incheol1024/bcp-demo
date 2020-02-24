@@ -33,6 +33,7 @@ spring:
     host: localhost
     port: 6379
 
+
 # hibernate 바인드 파라미터 값 설정
 logging:
   level:

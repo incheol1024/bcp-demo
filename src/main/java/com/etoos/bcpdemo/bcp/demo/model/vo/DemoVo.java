@@ -8,11 +8,13 @@ import org.apache.ibatis.type.Alias;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import java.io.Serializable;
+
 import static com.etoos.bcpdemo.common.constant.CrudInterface.Create;
 
 @Data
 @Alias("demo")
-public class DemoVo {
+public class DemoVo implements Serializable{
 
     @Min(value = 0, groups = Create.class)
     private long id;

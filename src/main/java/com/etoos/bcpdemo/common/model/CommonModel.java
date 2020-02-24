@@ -2,7 +2,7 @@ package com.etoos.bcpdemo.common.model;
 
 import lombok.Data;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  api_info: {
@@ -15,9 +15,9 @@ import java.util.List;
 s
 */
 @Data
-public class CommonModel {
+public class CommonModel implements Serializable {
 
-    private ApiInfo info;
+    private Info info = new Info();
 
     private Object datas;
 

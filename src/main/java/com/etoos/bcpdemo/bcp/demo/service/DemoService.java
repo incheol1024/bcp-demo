@@ -1,5 +1,6 @@
 package com.etoos.bcpdemo.bcp.demo.service;
 
+import com.etoos.bcpdemo.common.aspect.TimeChecker;
 import com.etoos.bcpdemo.common.exception.NotFoundException;
 import com.etoos.bcpdemo.bcp.demo.model.entity.DemoEntity;
 import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@TimeChecker
 public class DemoService {
 
     private DemoRepository demoRepository;
@@ -58,13 +60,15 @@ public class DemoService {
         return commonModel;
     }
 
-    public DemoVo updateEntity(DemoVo demoVo) {
+    public CommonModel updateEntity(DemoVo demoVo) {
         DemoEntity demoEntity = new DemoEntity();
         demoEntity.setName(demoVo.getName());
         demoEntity.setValueOfDemoVo(demoVo);
         demoEntity = demoRepository.save(demoEntity);
         demoVo.valueOf(demoEntity);
-        return demoVo;
+        CommonModel commonModel = new CommonModel();
+        commonModel.setDatas(demoVo);
+        return commonModel;
     }
 
 

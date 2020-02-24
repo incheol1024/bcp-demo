@@ -7,6 +7,10 @@ import com.etoos.bcpdemo.common.aspect.TimeChecker;
 import com.etoos.bcpdemo.common.model.CommonModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,6 +38,7 @@ public class DemoController {
 
     @PostMapping("")
     @TimeChecker
+    @CachePut(value = "DemoVo", key = "#demoVo.id")
     public CommonModel createEntity(@Validated(value = Create.class) DemoVo demoVo) {
         log.info("{}", demoVo);
         return demoService.createEntity(demoVo);
@@ -46,14 +51,13 @@ public class DemoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DemoVo> updateEntity(@Validated(value = Update.class) DemoVo demoVo) {
-        demoVo = demoService.updateEntity(demoVo);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<>(demoVo, httpHeaders, HttpStatus.OK);
+    @Cacheable(value = "DemoVo", key = "#demoVo.id")
+    public CommonModel updateEntity(@Validated(value = Update.class) DemoVo demoVo) {
+        return demoService.updateEntity(demoVo);
     }
 
     @DeleteMapping("/{id}")
+    @CacheEvict(value = "DemoVo", key = "#id")
     public ResponseEntity deleteEntity(@PathVariable long id) {
         HttpStatus httpStatus = demoService.deleteEntity(id);
         return ResponseEntity.status(httpStatus).build();
