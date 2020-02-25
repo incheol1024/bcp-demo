@@ -1,32 +1,27 @@
 package com.etoos.bcpdemo;
 
-import com.etoos.bcpdemo.common.config.DataSourceProperties;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import javax.sql.DataSource;
 
 @Component
 public class AppRunner implements ApplicationRunner {
 
-    @Autowired
-    DataSourceProperties dataSourceProperties;
 
     @Autowired
-    @Qualifier("datasource-postgre-jpa")
-    DataSource dataSource;
+    StringEncryptor stringEncryptor;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
+        String encrypt = stringEncryptor.encrypt("sa");
+        String decrypt = stringEncryptor.decrypt(encrypt);
 
-        System.out.println(dataSourceProperties.toString());
-        System.out.println(dataSourceProperties.getPostgreHolder());
 
+        System.out.println(encrypt);
+        System.out.println(decrypt);
 
 
     }

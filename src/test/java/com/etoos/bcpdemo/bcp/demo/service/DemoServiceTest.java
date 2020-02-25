@@ -59,13 +59,13 @@ class DemoServiceTest {
     void findEntity() {
         //when
         long id = 5;
-        DemoVo entity = demoService.findEntity(id);
+//        DemoVo entity = demoService.findEntity(id);
 
         //then & verify
-        Assertions.assertThat(entity).matches(demoEntity ->
-                        demoEntity.getId() == id && demoEntity.getName().equals(demoEntityNameOnField)
-                , "DemoEntity Fields")
-                .satisfies(System.out::println);
+//        Assertions.assertThat(entity).matches(demoEntity ->
+//                        demoEntity.getId() == id && demoEntity.getName().equals(demoEntityNameOnField)
+//                , "DemoEntity Fields")
+//                .satisfies(System.out::println);
 
         verify(demoRepository, new Times(1)).findById(anyLong());
     }

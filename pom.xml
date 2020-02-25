@@ -116,6 +116,14 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- application.yml or application.properties 에 작성된 민감한 정보를 암호화 하기 위한 의존성 -->
+        <dependency>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+            <version>1.9.3</version>
+        </dependency>
+
+
 
     </dependencies>
 

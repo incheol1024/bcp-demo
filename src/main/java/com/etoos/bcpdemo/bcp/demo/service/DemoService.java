@@ -1,13 +1,11 @@
 package com.etoos.bcpdemo.bcp.demo.service;
 
-import com.etoos.bcpdemo.common.aspect.TimeChecker;
-import com.etoos.bcpdemo.common.exception.NotFoundException;
 import com.etoos.bcpdemo.bcp.demo.model.entity.DemoEntity;
 import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
 import com.etoos.bcpdemo.bcp.demo.repository.jpa.DemoRepository;
+import com.etoos.bcpdemo.common.exception.NotFoundException;
 import com.etoos.bcpdemo.common.model.CommonModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,7 +13,6 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@TimeChecker
 public class DemoService {
 
     private DemoRepository demoRepository;
@@ -41,11 +38,13 @@ public class DemoService {
         return commonModel;
     }
 
-    public DemoVo findEntity(long id) {
+    public CommonModel findEntity(long id) {
         DemoEntity demoEntity = demoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Not Found Entity id:" + id));
         DemoVo demoVo = new DemoVo();
-        return demoVo.valueOf(demoEntity);
+        CommonModel commonModel = new CommonModel();
+        commonModel.setDatas(commonModel);
+        return commonModel;
     }
 
     public CommonModel createEntity(DemoVo demoVo) {
@@ -72,9 +71,9 @@ public class DemoService {
     }
 
 
-    public HttpStatus deleteEntity(long id) {
+    public CommonModel deleteEntity(long id) {
         demoRepository.deleteById(id);
-        return HttpStatus.OK;
+        return new CommonModel();
     }
 
     public DemoEntity demoEntity() {
