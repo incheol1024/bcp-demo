@@ -37,6 +37,13 @@ spring:
 # hibernate 바인드 파라미터 값 설정
 logging:
   level:
+    com:
+      etoos:
+        bcpdemo:
+          bcp:
+            demo:
+              repository:
+                mapper: TRACE
     org:
       hibernate:
         type:
@@ -70,13 +77,17 @@ application:
       user-name: mysql username
       password: mysql password
     postgre-holder:
-      driver-class-name: org.h2.Driver
-      url: jdbc:h2:mem:testdb
-      user-name: ENC(se7y4GAlxbyYtHZSO4LiWA==)
-      password:
+#      driver-class-name: org.h2.Driver
+      driver-class-name: org.hibernate.dialect.PostgreSQLDialect
+#      url: jdbc:h2:mem:testdb
+      url: jdbc:postgresql://localhost:5432/testdb
+      user-name: incheol
+      password: pass
 
 jasypt:
   encryptor:
     bean: stringEncryptor
+
+
 
 ---

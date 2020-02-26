@@ -1,3 +1,4 @@
+/*
 package com.etoos.bcpdemo.common.config;
 
 import com.etoos.bcpdemo.common.batch.JobCompletionNotificationListener;
@@ -107,3 +108,4 @@ public class BatchConfiguration {
 
 
 }
+*/

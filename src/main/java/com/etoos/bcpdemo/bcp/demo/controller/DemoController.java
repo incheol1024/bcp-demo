@@ -46,7 +46,8 @@ public class DemoController {
 
     @PostMapping(value = ""
             , consumes = MediaType.APPLICATION_JSON_VALUE
-            , produces = MediaType.APPLICATION_JSON_VALUE)
+            , produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @ApiOperation(value = "DemoEntity를 생성합니다. id, name 을 메세지에 담아서 보내주세요."
             , consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE
@@ -55,7 +56,7 @@ public class DemoController {
             , @ApiImplicitParam(name = "name", value = "등록할 이름을 보내주세요. ex) hong gil dong")})
     @CachePut(value = "DemoVo", key = "#demoVo.id") // 최종 리턴 결과만 캐시에 저장함. 캐시에서 찾을 생각을 안함.
     @TimeChecker
-    public CommonModel createEntity(@Validated(value = Create.class) DemoVo demoVo) {
+    public CommonModel createEntity(@Validated(value = Create.class) @RequestBody DemoVo demoVo) {
         log.info("{}", demoVo);
         return demoService.createEntity(demoVo);
     }
@@ -93,8 +94,8 @@ public class DemoController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id"
             , value = "삭제할 아이디 값 ex) 1"
             , required = true
-    , dataType = "long"
-    , paramType = "path")})
+            , dataType = "long"
+            , paramType = "path")})
     @CacheEvict(value = "DemoVo", key = "#id") // 캐시 삭제
     public CommonModel deleteEntity(@PathVariable long id) {
         return demoService.deleteEntity(id);

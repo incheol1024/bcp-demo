@@ -1,5 +1,6 @@
 package com.etoos.bcpdemo.bcp.demo;
 
+import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -23,4 +24,18 @@ public class JsonEnumTest {
 //        String s = objectMapper.writeValueAsString(InfoMessagesEnum.CODE_DEFAULT);
 //        System.out.println(s);
     }
+
+    @Test
+    public void makeJson() throws JsonProcessingException {
+
+        DemoVo demoVo = new DemoVo();
+        demoVo.setName("incheol");
+        demoVo.setId(1);
+
+        String s = objectMapper.writeValueAsString(demoVo);
+        System.out.println(s);
+
+
+    }
+
 }
