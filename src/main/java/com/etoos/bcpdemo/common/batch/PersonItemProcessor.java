@@ -1,3 +1,4 @@
+/*
 package com.etoos.bcpdemo.common.batch;
 
 import org.slf4j.Logger;
@@ -22,3 +23,4 @@ public class PersonItemProcessor implements ItemProcessor<Person, Person> {
     }
 
 }
+*/

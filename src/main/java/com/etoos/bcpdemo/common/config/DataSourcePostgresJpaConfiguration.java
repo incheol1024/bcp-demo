@@ -1,8 +1,6 @@
 package com.etoos.bcpdemo.common.config;
 
 import com.etoos.bcpdemo.bcp.demo.repository.jpa.DemoRepository;
-import com.zaxxer.hikari.HikariDataSource;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -18,8 +16,6 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.etoos.bcpdemo.common.config.DataSourceProperties.DataSourcePropertyHolder;
-
 @Configuration
 @EnableConfigurationProperties({DataSourceProperties.class })
 /*
@@ -28,64 +24,46 @@ import static com.etoos.bcpdemo.common.config.DataSourceProperties.DataSourcePro
         , transactionManagerRef = "transactionManagerPostgre"
         , basePackageClasses = DemoRepository.class)
 */
-public class DataSourcePostgreJpaConfiguration {
+public class DataSourcePostgresJpaConfiguration {
 
     @Configuration
     @EnableJpaRepositories(
-            entityManagerFactoryRef = "entityManagerPostgre"
-            , transactionManagerRef = "transactionManagerPostgre"
+            entityManagerFactoryRef = "entityManagerPostgres"
+            , transactionManagerRef = "transactionManagerPostgres"
             , basePackageClasses = DemoRepository.class)
-    static class DataSourcePostgresJpaConfiguration {
+    static class DataSourcePostgresJpaConfigurations {
 
     }
 
-
-
     @Primary
-    @Bean("datasource-postgre-jpa")
-    public DataSource dataSourcePostgre(DataSourceProperties datas) {
-        DataSourcePropertyHolder postgreHolder = datas.getPostgreHolder();
-
-        HikariDataSource hikariDataSource = new HikariDataSource();
-        hikariDataSource.setDriverClassName(postgreHolder.getDriverClassName());
-        hikariDataSource.setJdbcUrl(postgreHolder.getUrl());
-        hikariDataSource.setUsername(postgreHolder.getUserName());
-        hikariDataSource.setPassword(postgreHolder.getPassword());
-        return hikariDataSource;
-//        return DataSourceBuilder.create().build();
-    }
-
-    @Primary
-    @Bean("entityManagerPostgre")
+    @Bean("entityManagerPostgres")
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(EntityManagerFactoryBuilder builder
-            , @Qualifier("datasource-postgre-jpa") DataSource dataSource) {
+            , @Qualifier("dataSourceForPostgresJpaMaster") DataSource dataSource) {
 
         return builder.dataSource(dataSource)
                 .packages("com.etoos.bcpdemo.bcp")
-                .persistenceUnit("postgre")
+//                .persistenceUnit("postgre")
                 .properties(additionalJpaProperties())
                 .build();
 
     }
-
-
-
 
 // 임시 샘플 코드
     Map<String, ?> additionalJpaProperties() {
         Map<String, String> map = new HashMap<>();
 
         map.put("hibernate.hbm2ddl.auto", "create");
-        map.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        map.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
         map.put("hibernate.show_sql", "true");
+        map.put("hibernate.use_jdbc_metadata_defaults", "false");
 
         return map;
     }
 
 
     @Primary
-    @Bean("transactionManagerPostgre")
-    public JpaTransactionManager jpaTransactionManager(@Qualifier("entityManagerPostgre") EntityManagerFactory managerFactory) {
+    @Bean("transactionManagerPostgres")
+    public JpaTransactionManager jpaTransactionManager(@Qualifier("entityManagerPostgres") EntityManagerFactory managerFactory) {
         JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
         jpaTransactionManager.setEntityManagerFactory(managerFactory);
         return jpaTransactionManager;

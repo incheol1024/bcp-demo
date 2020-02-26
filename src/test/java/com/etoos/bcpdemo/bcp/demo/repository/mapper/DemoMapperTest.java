@@ -40,4 +40,6 @@ class DemoMapperTest {
         demoVo.setName("aa");
         demoMapper.insertDemo(demoVo);
     }
+
+
 }

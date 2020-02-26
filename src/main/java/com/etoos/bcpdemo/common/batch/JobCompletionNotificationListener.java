@@ -1,3 +1,4 @@
+/*
 package com.etoos.bcpdemo.common.batch;
 
 import org.slf4j.Logger;
@@ -33,4 +34,4 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
             ).forEach(person -> log.info("Found <" + person + "> in the database."));
         }
     }
-}
+}*/

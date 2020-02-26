@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableTransactionManagement
 @MapperScan(basePackages = "com.etoos.bcpdemo.bcp.demo.repository.mapper")
 public class MybatisConfiguration {
 

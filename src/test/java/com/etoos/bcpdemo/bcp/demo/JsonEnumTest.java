@@ -10,6 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest
 @TestPropertySource(locations = {"classpath:/application.properties"})
 @ExtendWith(SpringExtension.class)
@@ -28,11 +31,22 @@ public class JsonEnumTest {
     @Test
     public void makeJson() throws JsonProcessingException {
 
+        List<DemoVo> list = new ArrayList<>();
+
         DemoVo demoVo = new DemoVo();
         demoVo.setName("incheol");
         demoVo.setId(1);
 
-        String s = objectMapper.writeValueAsString(demoVo);
+        DemoVo demoVo1 = new DemoVo();
+        demoVo.setName("incheol");
+        demoVo.setId(1);
+
+        list.add(demoVo);
+        list.add(demoVo1);
+
+        Object testObj = list;
+
+        String s = objectMapper.writeValueAsString(testObj);
         System.out.println(s);
 
 

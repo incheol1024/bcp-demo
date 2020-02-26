@@ -5,26 +5,21 @@ import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
 import com.etoos.bcpdemo.bcp.demo.service.DemoService;
 import com.etoos.bcpdemo.common.aspect.TimeChecker;
 import com.etoos.bcpdemo.common.model.CommonModel;
-import io.lettuce.core.protocol.ProtocolKeyword;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.net.SSLUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.util.ParameterTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.MediaSize;
 import java.util.ArrayList;
 import java.util.List;
 

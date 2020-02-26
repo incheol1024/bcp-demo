@@ -1,3 +1,4 @@
+/*
 package com.etoos.bcpdemo.common.batch;
 
 public class Person {
@@ -34,4 +35,4 @@ public class Person {
         return "firstName: " + firstName + ", lastName: " + lastName;
     }
 
-}
+}*/

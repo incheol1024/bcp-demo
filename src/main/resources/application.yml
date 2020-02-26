@@ -78,9 +78,9 @@ application:
       password: mysql password
     postgre-holder:
 #      driver-class-name: org.h2.Driver
-      driver-class-name: org.hibernate.dialect.PostgreSQLDialect
+      driver-class-name: org.postgresql.Driver
 #      url: jdbc:h2:mem:testdb
-      url: jdbc:postgresql://localhost:5432/testdb
+      url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
       user-name: incheol
       password: pass
 
@@ -88,6 +88,38 @@ jasypt:
   encryptor:
     bean: stringEncryptor
 
+test:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    jdbcUrl: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+    username: incheol
+    password: pass
+    pool-name: hikhik
+
+datasource:
+  postgres:
+    jpa:
+      master:
+        jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+        username: incheol
+        password: pass
+        pool-name: postgres-jpa-master
+      slave-one:
+        jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+        username: incheol
+        password: pass
+        pool-name: postgres-jpa-slave-one
 
 
+    mybatis:
+      mater:
+        jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+        username: incheol
+        password: pass
+        pool-name: postgres-mybatis-slave-master
+      slave-one:
+        jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+        username: incheol
+        password: pass
+        pool-name: postgres-mybatis-slave-slave-one
 ---

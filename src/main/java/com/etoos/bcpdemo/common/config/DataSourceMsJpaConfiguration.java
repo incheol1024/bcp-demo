@@ -1,3 +1,4 @@
+/*
 package com.etoos.bcpdemo.common.config;
 
 import com.etoos.bcpdemo.bcp.demo.repository.jpa.DemoRepository;
@@ -72,3 +73,4 @@ public class DataSourceMsJpaConfiguration {
 
 
 }
+*/

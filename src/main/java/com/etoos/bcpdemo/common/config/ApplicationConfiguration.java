@@ -22,7 +22,6 @@ public class ApplicationConfiguration {
 
     private static final String DEFAULT_NAME = "default name";
 
-
     @Bean
     @Primary
     ApplicationProperties applicationProperties(ApplicationProperties properties) {
@@ -55,38 +54,6 @@ public class ApplicationConfiguration {
     }
 
 
-/*
-    @Bean
-    @ConditionalOnSingleCandidate(type = "DataSource")
-    @Qualifier("postreSqlDataSource")
-    DataSource postgreSqlDataSource(DataSourcePostgreSqlProperties postgreSqlProperties) {
-        HikariDataSource hikariDataSource = DataSourceBuilder.create().type(HikariDataSource.class)
-                .url(postgreSqlProperties.getUrl())
-                .username(postgreSqlProperties.getUserName())
-                .password(postgreSqlProperties.getPassword())
-                .driverClassName("org.h2.Driver")
-                .build();
-
-        hikariDataSource.setConnectionTimeout(postgreSqlProperties.getConnectionTimeOut());
-        return hikariDataSource;
-    }
-
-
-    @Bean
-    @ConditionalOnSingleCandidate(type = "DataSource")
-    @Qualifier("postreSqlDataSource")
-    DataSource msSqlDataSource(DataSourceMsSqlProperties msSqlProperties) {
-        HikariDataSource hikariDataSource = DataSourceBuilder.create().type(HikariDataSource.class)
-                .url(msSqlProperties.getUrl())
-                .username(msSqlProperties.getUserName())
-                .password(msSqlProperties.getPassword())
-                .driverClassName("org.h2.Driver")
-                .build();
-
-//        hikariDataSource.setConnectionTimeout(msSqlProperties.getConnectionTimeOut());
-        return hikariDataSource;
-    }
-*/
 
 
 }

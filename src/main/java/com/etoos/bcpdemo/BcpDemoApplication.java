@@ -14,8 +14,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class,
         DataSourceTransactionManagerAutoConfiguration.class })
-@EnableSwagger2
 @EnableCaching
+@EnableSwagger2
 public class BcpDemoApplication {
 
     public static void main(String[] args) {
