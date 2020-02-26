@@ -697,111 +697,97 @@ public class DemoServiceSliceTest {
    
  ```java
 @Configuration
-@EnableConfigurationProperties({DataSourceProperties.class })
-@EnableJpaRepositories(
-        entityManagerFactoryRef = "entityManagerPostgre"
-        , transactionManagerRef = "transactionManagerPostgre"
-        , basePackageClasses = DemoRepository.class)
-public class DataSourcePostgreJpaConfiguration {
+public class DataSourceConfiguration {
 
 
-    @Primary
-    @Bean("datasource-postgre-jpa")
-    public DataSource dataSourcePostgre(DataSourceProperties datas) {
-        DataSourcePropertyHolder postgreHolder = datas.getPostgreHolder();
+    @Bean("dataSourceForPostgresJpaMaster")
+    @ConfigurationProperties(prefix = "datasource.postgres.jpa.master")
+    public DataSource dataSourceForPostgresJpaMaster() {
+        return new HikariDataSource();
+    }
 
-        HikariDataSource hikariDataSource = new HikariDataSource();
-        hikariDataSource.setDriverClassName(postgreHolder.getDriverClassName());
-        hikariDataSource.setJdbcUrl(postgreHolder.getUrl());
-        hikariDataSource.setUsername(postgreHolder.getUserName());
-        hikariDataSource.setPassword(postgreHolder.getPassword());
-        return hikariDataSource;
-//        return DataSourceBuilder.create().build();
+    @Bean("dataSourceForPostgresJpaSlaveOne")
+    @ConfigurationProperties(prefix = "datasource.postgres.jpa.slave-one")
+    public DataSource dataSourceForPostgresJpaSlaveOne() {
+        return new HikariDataSource();
+    }
+
+    @Bean("dataSourceForPostgresMybatisMaster")
+    @ConfigurationProperties(prefix = "datasource.postgres.mybatis.mater")
+    public DataSource dataSourceForPostgresMybatisMaster() {
+        return new HikariDataSource();
+    }
+
+    @Bean("dataSourceForPostgresMybatisSlaveOne")
+    @ConfigurationProperties(prefix = "datasource.postgres.mybatis.slave-one")
+    public DataSource dataSourceForPostgresMybatisSlaveOne() {
+        return new HikariDataSource();
+    }
+
+    @Bean("routingDataSourceForPostgresJpa")
+    public DataSource routingDataSourceForPostgresJpa(@Qualifier("dataSourceForPostgresJpaMaster") DataSource masterDataSource
+            , @Qualifier("dataSourceForPostgresJpaSlaveOne") DataSource slaveDataSource) {
+        ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
+        Map<Object, Object> dataSourceMap = new HashMap<>();
+        dataSourceMap.put("write", masterDataSource);
+        dataSourceMap.put("read", slaveDataSource);
+        routingDataSource.setTargetDataSources(dataSourceMap);
+        routingDataSource.setDefaultTargetDataSource(masterDataSource);
+        return routingDataSource;
     }
 
     @Primary
-    @Bean("entityManagerPostgre")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(EntityManagerFactoryBuilder builder
-            , @Qualifier("datasource-postgre-jpa") DataSource dataSource) {
-
-        return builder.dataSource(dataSource)
-                .packages("com.etoos.bcpdemo.bcp")
-                .persistenceUnit("postgre")
-                .properties(additionalJpaProperties())
-                .build();
-
+    @Bean
+    public DataSource dataSourceForPostgresJpaMain(
+            @Qualifier("routingDataSourceForPostgresJpa") DataSource routingDataSource) {
+        return new LazyConnectionDataSourceProxy(routingDataSource);
     }
 
 
-
-
-// 임시 샘플 코드
-    Map<String, ?> additionalJpaProperties() {
-        Map<String, String> map = new HashMap<>();
-
-        map.put("hibernate.hbm2ddl.auto", "create");
-        map.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        map.put("hibernate.show_sql", "true");
-
-        return map;
-    }
-
-
-    @Primary
-    @Bean("transactionManagerPostgre")
-    public JpaTransactionManager jpaTransactionManager(@Qualifier("entityManagerPostgre") EntityManagerFactory managerFactory) {
-        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-        jpaTransactionManager.setEntityManagerFactory(managerFactory);
-        return jpaTransactionManager;
+    @Slf4j
+    static class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
+        @Override
+        protected Object determineCurrentLookupKey() {
+            String dataSourceType =
+                    TransactionSynchronizationManager.isCurrentTransactionReadOnly() ? "read" : "write";
+            return dataSourceType;
+        }
     }
 
 
 }
 ```
-  
-   * Configuration Properties 파일
-   ```java
-@ConfigurationProperties(prefix = "application.datasource")
-@Data
-public class DataSourceProperties {
 
-    private DataSourcePropertyHolder postgreHolder = new DataSourcePropertyHolder();
-
-    private DataSourcePropertyHolder msHolder = new DataSourcePropertyHolder();
-
-
-    @Data
-    public static class DataSourcePropertyHolder{
-
-        private String driverClassName;
-
-        private String url;
-
-        private String userName;
-
-        private String password;
-
-    }
-
-
-}
-```
   
   * yaml 파일 설정하기
 ```yaml
 # 애플리케이션이 사용하는 프레임워크 설정을 커스텀하기 위한 프로퍼티 입니다.
-application:
-  datasource:
-    ms-holder:
-      driver-class-name: org.h2.Driver
-      url: mysql url
-      user-name: mysql username
-      password: mysql password
-    postgre-holder:
-      driver-class-name: org.h2.Driver
-      url: jdbc:h2:mem:testdb
-      user-name: sa
-      password:
+datasource:
+  postgres:
+    jpa:
+      master:
+        jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+        username: incheol
+        password: pass
+        pool-name: postgres-jpa-master
+      slave-one:
+        jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+        username: incheol
+        password: pass
+        pool-name: postgres-jpa-slave-one
+
+
+    mybatis:
+      mater:
+        jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+        username: incheol
+        password: pass
+        pool-name: postgres-mybatis-slave-master
+      slave-one:
+        jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+        username: incheol
+        password: pass
+        pool-name: postgres-mybatis-slave-slave-one
 ```
 
  ### 공통 Exception 처리
