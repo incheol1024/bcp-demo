@@ -19,7 +19,7 @@ public class Info implements Serializable {
 
     }
 
-    public Info(String code, String message, Object detail) {
+    private Info(String code, String message, Object detail) {
         this.code = code;
         this.message = message;
         this.detail = detail;

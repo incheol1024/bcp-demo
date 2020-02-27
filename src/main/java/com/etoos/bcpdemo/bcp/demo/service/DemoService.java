@@ -3,15 +3,21 @@ package com.etoos.bcpdemo.bcp.demo.service;
 import com.etoos.bcpdemo.bcp.demo.model.entity.DemoEntity;
 import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
 import com.etoos.bcpdemo.bcp.demo.repository.jpa.DemoRepository;
+import com.etoos.bcpdemo.common.exception.CommonException;
 import com.etoos.bcpdemo.common.exception.NotFoundException;
 import com.etoos.bcpdemo.common.model.CommonModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.thymeleaf.IThrottledTemplateProcessor;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @Transactional
 public class DemoService {
 
@@ -48,6 +54,13 @@ public class DemoService {
     }
 
     public CommonModel createEntity(DemoVo demoVo) {
+
+        if (demoVo != null) {
+            log.error("log 찍였다");
+
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "not found id");
+        }
+
         DemoEntity demoEntity = new DemoEntity();
 //        demoEntity.setValueOfDemoVo(demoVo);
         demoEntity.setName(demoVo.getName());

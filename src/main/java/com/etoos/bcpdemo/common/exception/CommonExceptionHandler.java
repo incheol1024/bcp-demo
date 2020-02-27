@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Objects;
@@ -20,19 +21,25 @@ import java.util.Objects;
 public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(NotFoundException.class) // ResponseStatusException 사용한다면 NotFoundException 필요할까요?
     public ResponseEntity<Object> handleNotFoundException(NotFoundException exception, WebRequest webRequest) {
         return this.handleExceptionInternal(exception, exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
     }
 
-    @ExceptionHandler(CommonException.class)
+    @ExceptionHandler(CommonException.class) // ResponseStatusException 사용한다면 CommonException 필요할까요?
     public ResponseEntity<Object> handleCommonException(CommonException commonException, WebRequest webRequest) {
         return handleExceptionInternal(commonException, commonException.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleRuntimeException(RuntimeException runtimeException, WebRequest webRequest) {
-        return this.handleExceptionInternal(runtimeException, runtimeException, null, HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
+        if (runtimeException instanceof ResponseStatusException) {
+            ResponseStatusException responseStatusException = (ResponseStatusException)runtimeException;
+            HttpStatus httpStatus = responseStatusException.getStatus();
+            Object body = responseStatusException.getReason();
+            return this.handleExceptionInternal(runtimeException, body, null, httpStatus, webRequest);
+        }
+        return this.handleExceptionInternal(runtimeException, runtimeException.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
     }
 
     @Override
@@ -45,7 +52,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.error("{} \r\n {}", ex.getStackTrace(), request);
         CommonModel commonModel = new CommonModel();
-        if(Objects.isNull(body))
+        if (Objects.isNull(body))
             body = ex.getMessage();
 
         Info info = Info.create(String.valueOf(status.value()), status.name(), body);

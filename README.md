@@ -791,51 +791,73 @@ datasource:
 ```
 
  ### 공통 Exception 처리
-   * 공통 Exception 핸들러  
+   * 공통 Exception 핸들러
+   * 참고 URL
+        * Spring Exception Handling 참고 URL: https://www.baeldung.com/exception-handling-for-rest-with-spring  
+        * ResponseStatusException 참고 URL: https://www.baeldung.com/spring-response-status-exception
+   * 설명: 
+        * RestControllerAdvice 애너테이션을 이용하여 여러 서비스 핸들링에서 발생할 수 있는 Exception 들을 한곳에서 처리하도록 구현하였습니다.
+   ResponseEntityExceptionHandler 를 상속받아 Spring 에서 제공하는 기본적인 Exception 유형들을 사용할 수 있으며 
+   우리는 CommonExceptionHandler 의 handleExceptionInternal 메소드에서 CommonModel(응답으로 내보내기 위한 모델 형태)을 최종적으로 셋팅 한 후 
+   ResponseEntity 바디에 실어서 응답합니다.
+   개발자는 예외를 던지고자 하는 경우 ResponseStatusException에 HttpStatus 및 Message(reason)를 생성하여 던지기만 하면 되며 응답 형태에 대해서 신경쓰지 않아도 됩니다.              
+   
 ```java
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(NotFoundException.class) // ResponseStatusException 사용한다면 NotFoundException 필요할까요?
     public ResponseEntity<Object> handleNotFoundException(NotFoundException exception, WebRequest webRequest) {
-        log.error("{} \r\n {}", exception, webRequest);
-
-        return this.handleExceptionInternal(exception, null, new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
+        return this.handleExceptionInternal(exception, exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
     }
 
-
-    @ExceptionHandler(CommonException.class)
-    public ResponseEntity handleCommonException(CommonException commonException, WebRequest webRequest) {
-        log.error("{} \r\n {}", commonException.getStackTrace(), webRequest);
-        DemoErrorMessage errorMessage = commonException.getErrorMessage();
-        return handleExceptionInternal(commonException, errorMessage.getMessage(), new HttpHeaders(), errorMessage.getStatus(), webRequest);
+    @ExceptionHandler(CommonException.class) // ResponseStatusException 사용한다면 CommonException 필요할까요?
+    public ResponseEntity<Object> handleCommonException(CommonException commonException, WebRequest webRequest) {
+        return handleExceptionInternal(commonException, commonException.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
     }
-
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity handleRuntimeException(RuntimeException runtimeException, WebRequest webRequest) {
-        log.error("{} \r\n {}", runtimeException, webRequest);
-        return this.handleExceptionInternal(runtimeException, runtimeException.getMessage(), null, null, webRequest);
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException runtimeException, WebRequest webRequest) {
+        if (runtimeException instanceof ResponseStatusException) {
+            ResponseStatusException responseStatusException = (ResponseStatusException)runtimeException;
+            HttpStatus httpStatus = responseStatusException.getStatus();
+            Object body = responseStatusException.getReason();
+            return this.handleExceptionInternal(runtimeException, body, null, httpStatus, webRequest);
+        }
+        return this.handleExceptionInternal(runtimeException, runtimeException.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
     }
 
-
-
     @Override
-    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-        return this.handleExceptionInternal(ex, ex.getAllErrors(), headers, status, request);
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        BindingResult bindingResult = ex.getBindingResult();
+        return handleExceptionInternal(ex, ValidationResult.create(bindingResult), headers, status, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        log.error("{} \r\n {}", ex.getStackTrace(), request);
+        CommonModel commonModel = new CommonModel();
         if (Objects.isNull(body))
             body = ex.getMessage();
 
-        return super.handleExceptionInternal(ex, body, headers, status, request);
-    }
+        Info info = Info.create(String.valueOf(status.value()), status.name(), body);
+        commonModel.setInfo(info);
 
+/*
+        if (ex instanceof MethodArgumentNotValidException) {
+            BindingResult bindingResult = ((MethodArgumentNotValidException) ex).getBindingResult();
+            ValidationResult validationResult = ValidationResult.create(bindingResult);
+            info = Info.create(String.valueOf(status.value()), status.name(), validationResult);
+        } else {
+            info = Info.create(String.valueOf(status.value()), status.name(), ex.getMessage());
+        }
+*/
+
+        return super.handleExceptionInternal(ex, commonModel, headers, status, request);
+    }
+}   
 ```   
 
 

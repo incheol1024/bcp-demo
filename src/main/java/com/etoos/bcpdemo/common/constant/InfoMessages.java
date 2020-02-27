@@ -10,6 +10,7 @@ public final class InfoMessages {
 
     private static String defaultMessage;
 
+
     @Value("${response.info.default-code}")
     private void setDefaultCode(String defaultCode) {
         this.defaultCode = defaultCode;
