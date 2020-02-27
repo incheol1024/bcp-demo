@@ -688,9 +688,6 @@ public class DemoServiceSliceTest {
   
   
 # 공통 코드
- ### Response format  
- * 참고 URL - https://github.com/cryptlex/rest-api-response-format
- 
     
  ### DataSource 분리 설정
  * Configuration 파일
@@ -860,6 +857,37 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 }   
 ```   
 
+ ### Response format  
+ * 참고 URL - https://github.com/cryptlex/rest-api-response-format
+ * 응답 형태
+   - {  
+        info: { },  
+        datas: { }  
+   }
+ 
+ * 200
+   
+ ![response-ok](/meta/img/response-ok.jpg)  
+   
+ * 400 validation exception    
+  
+ ![response-400-bind](/meta/img/response-400-bind.jpg)  
+   
+ * 개발자 정의 (throw new ResponseStatusException 사용)  
+   
+ ![response-devworker](/meta/img/response-devworker.jpg)  
+   
+ * 예기치 못한 Exception (DB 중지하고 요청을 보내봤음)  
+   
+ ![response-RuntimeException](/meta/img/response-RuntimeException.jpg)  
+   
+   
+  
+ 
+ 
+ 
+ 
+ 
 
 
 

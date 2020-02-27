@@ -51,11 +51,12 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.error("{} \r\n {}", ex.getStackTrace(), request);
-        CommonModel commonModel = new CommonModel();
         if (Objects.isNull(body))
             body = ex.getMessage();
 
+
         Info info = Info.create(String.valueOf(status.value()), status.name(), body);
+        CommonModel commonModel = new CommonModel();
         commonModel.setInfo(info);
 
 /*

@@ -8,6 +8,7 @@ import com.etoos.bcpdemo.common.exception.NotFoundException;
 import com.etoos.bcpdemo.common.model.CommonModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,7 +47,7 @@ public class DemoService {
 
     public CommonModel findEntity(long id) {
         DemoEntity demoEntity = demoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Not Found Entity id:" + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Entity id:" + id));
         DemoVo demoVo = new DemoVo();
         CommonModel commonModel = new CommonModel();
         commonModel.setDatas(commonModel);
@@ -54,13 +55,6 @@ public class DemoService {
     }
 
     public CommonModel createEntity(DemoVo demoVo) {
-
-        if (demoVo != null) {
-            log.error("log 찍였다");
-
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "not found id");
-        }
-
         DemoEntity demoEntity = new DemoEntity();
 //        demoEntity.setValueOfDemoVo(demoVo);
         demoEntity.setName(demoVo.getName());
