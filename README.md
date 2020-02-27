@@ -592,8 +592,8 @@ public class DemoVo {
 ```
   
   
-## MVC TEST
-* ### 통합 테스트 (요청 -> 서비스 -> 응답)
+* ## MVC TEST
+    * ### 통합 테스트 (요청 -> 서비스 -> 응답)
 ```java
       @SpringBootTest
       @AutoConfigureMockMvc
@@ -647,8 +647,8 @@ public class DemoVo {
           }
       }
 ```
-
-* ### 단위 테스트 (given, when, then)
+*
+    * ### 단위 테스트 (given, when, then)
 ```java
 @ExtendWith(MockitoExtension.class)
 public class DemoServiceSliceTest {
@@ -689,7 +689,7 @@ public class DemoServiceSliceTest {
   
 # 공통 코드
     
- ### DataSource 분리 설정
+ * ### DataSource 분리 설정 (업데이트 필요)
  * Configuration 파일
    
  ```java
@@ -787,7 +787,7 @@ datasource:
         pool-name: postgres-mybatis-slave-slave-one
 ```
 
- ### 공통 Exception 처리
+ * ### 공통 Exception 처리
    * 공통 Exception 핸들러
    * 참고 URL
         * Spring Exception Handling 참고 URL: https://www.baeldung.com/exception-handling-for-rest-with-spring  
@@ -857,29 +857,29 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 }   
 ```   
 
- ### Response format  
- * 참고 URL - https://github.com/cryptlex/rest-api-response-format
- * 응답 형태
+ * ### Response format  
+    * 참고 URL - https://github.com/cryptlex/rest-api-response-format
+    * 응답 형태
    - {  
         info: { },  
         datas: { }  
    }
  
- * 200
+    * 200
    
- ![response-ok](/meta/img/response-ok.jpg)  
+    ![response-ok](/meta/img/response-ok.jpg)  
    
- * 400 validation exception    
+    * 400 validation exception    
   
- ![response-400-bind](/meta/img/response-400-bind.jpg)  
+    ![response-400-bind](/meta/img/response-400-bind.jpg)  
    
- * 개발자 정의 (throw new ResponseStatusException 사용)  
+    * 개발자 정의 (throw new ResponseStatusException 사용)  
    
- ![response-devworker](/meta/img/response-devworker.jpg)  
+    ![response-devworker](/meta/img/response-devworker.jpg)  
    
- * 예기치 못한 Exception (DB 중지하고 요청을 보내봤음)  
+    * 예기치 못한 Exception (DB 중지하고 요청을 보내봤음)  
    
- ![response-RuntimeException](/meta/img/response-RuntimeException.jpg)  
+    ![response-RuntimeException](/meta/img/response-RuntimeException.jpg)  
    
    
   
