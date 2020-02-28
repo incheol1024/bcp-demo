@@ -3,18 +3,17 @@ package com.etoos.bcpdemo.bcp.demo.service;
 import com.etoos.bcpdemo.bcp.demo.model.entity.DemoEntity;
 import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
 import com.etoos.bcpdemo.bcp.demo.repository.jpa.DemoRepository;
-import com.etoos.bcpdemo.common.exception.CommonException;
-import com.etoos.bcpdemo.common.exception.NotFoundException;
+import com.etoos.bcpdemo.bcp.demo.repository.mapper.DemoMapper;
+import com.etoos.bcpdemo.common.aspect.DatabaseRouter;
+import com.etoos.bcpdemo.common.constant.DataSourceDirection;
 import com.etoos.bcpdemo.common.model.CommonModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import org.thymeleaf.IThrottledTemplateProcessor;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -22,13 +21,21 @@ import java.util.Optional;
 @Transactional
 public class DemoService {
 
+    @Autowired
     private DemoRepository demoRepository;
 
-
     @Autowired
-    public DemoService(DemoRepository demoRepository) {
-        this.demoRepository = demoRepository;
+    private DemoMapper demoMapper;
+
+
+    @DatabaseRouter(DataSourceDirection.POSTGRES_MASTER)
+    public CommonModel createDemo(DemoVo demoVo) {
+        demoMapper.insertDemo(demoVo);
+        CommonModel commonModel = new CommonModel();
+        commonModel.setDatas(demoVo);
+        return commonModel;
     }
+
 
     public CommonModel findNameById(long id) {
         DemoEntity demoEntity = demoRepository.findById(id)
@@ -41,10 +48,10 @@ public class DemoService {
         CommonModel commonModel = new CommonModel();
         commonModel.setDatas(demoVo);
 
-
         return commonModel;
     }
 
+    @DatabaseRouter(DataSourceDirection.POSTGRES_MASTER)
     public CommonModel findEntity(long id) {
         DemoEntity demoEntity = demoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Entity id:" + id));
@@ -54,6 +61,7 @@ public class DemoService {
         return commonModel;
     }
 
+    @DatabaseRouter(DataSourceDirection.POSTGRES_SLAVE_ONE)
     public CommonModel createEntity(DemoVo demoVo) {
         DemoEntity demoEntity = new DemoEntity();
 //        demoEntity.setValueOfDemoVo(demoVo);

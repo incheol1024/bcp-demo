@@ -39,6 +39,15 @@ public class DemoController {
     @Autowired
     DemoService demoService;
 
+
+    // mybatis test
+    @PostMapping("/mybatis")
+    public CommonModel createDemo(@RequestBody DemoVo demoVo) {
+        return demoService.createDemo(demoVo);
+    }
+
+
+
     @PostMapping(value = ""
             , consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE

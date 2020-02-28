@@ -39,7 +39,7 @@ public class DemoServiceSliceTest {
                 });
 
         // when
-        DemoService demoService = new DemoService(demoRepository);
+
 //        DemoVo entity = demoService.findEntity(id);
 
         // then & verify
