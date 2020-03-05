@@ -6,19 +6,26 @@ import com.etoos.bcpdemo.bcp.demo.repository.jpa.DemoRepository;
 import com.etoos.bcpdemo.bcp.demo.repository.mapper.DemoMapper;
 import com.etoos.bcpdemo.common.aspect.DatabaseRouter;
 import com.etoos.bcpdemo.common.constant.DataSourceDirection;
+import com.etoos.bcpdemo.common.exception.CommonException;
 import com.etoos.bcpdemo.common.model.CommonModel;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.UserTransaction;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @Slf4j
 @Transactional
+@DatabaseRouter(DataSourceDirection.POSTGRES_MASTER)
 public class DemoService {
 
     @Autowired
@@ -28,12 +35,14 @@ public class DemoService {
     private DemoMapper demoMapper;
 
 
-    @DatabaseRouter(DataSourceDirection.POSTGRES_MASTER)
+    @Transactional()
     public CommonModel createDemo(DemoVo demoVo) {
         demoMapper.insertDemo(demoVo);
-        CommonModel commonModel = new CommonModel();
-        commonModel.setDatas(demoVo);
-        return commonModel;
+
+        if(Objects.nonNull(demoVo))
+             throw new CommonException(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return CommonModel.create(demoVo);
     }
 
 
@@ -51,7 +60,6 @@ public class DemoService {
         return commonModel;
     }
 
-    @DatabaseRouter(DataSourceDirection.POSTGRES_MASTER)
     public CommonModel findEntity(long id) {
         DemoEntity demoEntity = demoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found Entity id:" + id));
@@ -61,17 +69,14 @@ public class DemoService {
         return commonModel;
     }
 
-    @DatabaseRouter(DataSourceDirection.POSTGRES_SLAVE_ONE)
+
+    @DatabaseRouter(DataSourceDirection.POSTGRES_MASTER)
+    @Transactional
     public CommonModel createEntity(DemoVo demoVo) {
-        DemoEntity demoEntity = new DemoEntity();
-//        demoEntity.setValueOfDemoVo(demoVo);
-        demoEntity.setName(demoVo.getName());
+        DemoEntity demoEntity = DemoEntity.createDemo(demoVo);
         demoEntity = demoRepository.save(demoEntity);
         demoVo.valueOf(demoEntity);
-
-        CommonModel commonModel = new CommonModel();
-        commonModel.setDatas(demoVo);
-        return commonModel;
+        return CommonModel.create(demoVo);
     }
 
     public CommonModel updateEntity(DemoVo demoVo) {

@@ -9,4 +9,17 @@
         INSERT INTO DEMOENTITY VALUES (#{id}, #{name})
     </insert>
 
+    <select id="findById" parameterType="long" resultType="com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo">
+        SELECT DEMO.ID, DEMO.NAME FROM DEMOENTITY DEMO WHERE DEMO.ID = #{id}
+    </select>
+
+    <update id="updateDemo" parameterType="com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo">
+        UPDATE DEMOENTITY SET name = #{name} WHERE ID = #{id}
+    </update>
+
+    <delete id="deleteDemo" parameterType="com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo">
+        DELETE FROM DEMOENTITY WHERE ID = #{id}
+    </delete>
+
+
 </mapper>

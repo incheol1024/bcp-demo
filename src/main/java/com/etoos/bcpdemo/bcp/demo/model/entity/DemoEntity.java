@@ -1,19 +1,23 @@
 package com.etoos.bcpdemo.bcp.demo.model.entity;
 
 import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
+import lombok.AllArgsConstructor;
 
 import javax.persistence.*;
 
+@AllArgsConstructor
 @Entity
 public class DemoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column
     private String name;
 
+    public DemoEntity() {
+    }
 
     public long getId() {
         return id;
@@ -43,5 +47,10 @@ public class DemoEntity {
         this.id = demoVo.getId();
         this.name = demoVo.getName();
         return this;
+    }
+
+    public static DemoEntity createDemo(DemoVo demoVo) {
+        DemoEntity demoEntity = new DemoEntity(demoVo.getId(), demoVo.getName());
+        return demoEntity;
     }
 }

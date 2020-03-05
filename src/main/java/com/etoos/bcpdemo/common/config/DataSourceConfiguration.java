@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.sql.DataSource;
@@ -44,43 +43,24 @@ public class DataSourceConfiguration {
         return new HikariDataSource();
     }
 
-    @Bean("dataSourceRoutingPostgres")
-    public DataSource dataSourceRoutingPostgres(
-            @Qualifier("dataSourceForPostgresMaster") DataSource dataSourceForPostgresMaster
-            , @Qualifier("dataSourceForPostgresSlaveOne") DataSource dataSourceForPostgresSlaveOne) {
+
+    @Primary
+    @Bean("dataSourceRoutingMain")
+    public DataSource dataSourceRoutingMain(@Qualifier("dataSourceForPostgresMaster") DataSource dataSourceForPostgresMaster
+            , @Qualifier("dataSourceForPostgresSlaveOne") DataSource dataSourceForPostgresSlaveOne
+            , @Qualifier("dataSourceForMsSqlMaster") DataSource dataSourceForMsSqlMaster
+            , @Qualifier("dataSourceForMsSqlSlaveOne") DataSource dataSourceForMsSqlSlaveOne
+    ) {
         ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
         Map<Object, Object> dataSourceMap = new HashMap<>();
         dataSourceMap.put(DataSourceDirection.POSTGRES_MASTER, dataSourceForPostgresMaster);
         dataSourceMap.put(DataSourceDirection.POSTGRES_SLAVE_ONE, dataSourceForPostgresSlaveOne);
-        routingDataSource.setTargetDataSources(dataSourceMap);
-        routingDataSource.setDefaultTargetDataSource(dataSourceForPostgresMaster);
-        return routingDataSource;
-    }
-
-    @Bean("dataSourceRoutingMsSql")
-    public DataSource dataSourceRoutingMsSql(
-            @Qualifier("dataSourceForMsSqlMaster") DataSource dataSourceForMsSqlMaster
-            , @Qualifier("dataSourceForMsSqlSlaveOne") DataSource dataSourceForMsSqlSlaveOne) {
-        ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
-        Map<Object, Object> dataSourceMap = new HashMap<>();
         dataSourceMap.put(DataSourceDirection.MS_SQL_MASTER, dataSourceForMsSqlMaster);
         dataSourceMap.put(DataSourceDirection.MS_SQL_SLAVE_ONE, dataSourceForMsSqlSlaveOne);
         routingDataSource.setTargetDataSources(dataSourceMap);
-        routingDataSource.setDefaultTargetDataSource(dataSourceForMsSqlMaster);
+        routingDataSource.setDefaultTargetDataSource(dataSourceForPostgresMaster);
         return routingDataSource;
-    }
 
-    @Primary
-    @Bean("dataSourcePostgresMain")
-    public DataSource dataSourcePostgresMain(
-            @Qualifier("dataSourceRoutingPostgres") DataSource routingDataSource) {
-        return new LazyConnectionDataSourceProxy(routingDataSource);
-    }
-
-    @Bean("dataSourceMsSqlMain")
-    public DataSource dataSourceMsSqlMain(
-            @Qualifier("dataSourceRoutingMsSql") DataSource routingDataSource) {
-        return new LazyConnectionDataSourceProxy(routingDataSource);
     }
 
 
@@ -88,6 +68,7 @@ public class DataSourceConfiguration {
     private static class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
         @Override
         protected Object determineCurrentLookupKey() {
+            log.info("datasource key = {} ", DataSourceKeyThreadHolder.getDataSourceKey());
             return DataSourceKeyThreadHolder.getDataSourceKey();
         }
     }

@@ -3,7 +3,9 @@ package com.etoos.bcpdemo.common.config;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnResource;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,19 +40,18 @@ public class ApplicationConfiguration {
     }
 
 
+    @Bean(name = "encryptorBean")
+    public StringEncryptor stringEncryptor(SimpleStringPBEConfig simpleStringPBEConfig) {
+        PooledPBEStringEncryptor stringEncryptor = new PooledPBEStringEncryptor();
+        stringEncryptor.setConfig(simpleStringPBEConfig);
+        return stringEncryptor;
+    }
+
+
     @Bean
-    public StringEncryptor stringEncryptor() {
-        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
-        SimpleStringPBEConfig config = new SimpleStringPBEConfig();
-        config.setPassword("encryption key");
-        config.setAlgorithm("PBEWithMD5AndDES");
-        config.setKeyObtentionIterations("1000");
-        config.setPoolSize(1);
-        config.setProviderName("SunJCE");
-        config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-        config.setStringOutputType("base64");
-        encryptor.setConfig(config);
-        return encryptor;
+    @ConfigurationProperties("config.encrypt")
+    public SimpleStringPBEConfig simpleStringPBEConfig() {
+        return new SimpleStringPBEConfig();
     }
 
 

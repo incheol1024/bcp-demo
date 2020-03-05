@@ -14,7 +14,7 @@ import static com.etoos.bcpdemo.common.constant.CrudInterface.Create;
 
 @Data
 @Alias("demo")
-public class DemoVo implements Serializable{
+public class DemoVo{
 
     @Min(value = 0, groups = Create.class)
     private long id;

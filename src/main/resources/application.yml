@@ -4,19 +4,19 @@ spring:
 
 
 ---
+
+# server 설정
+server:
+  port: 8081
+  address: 127.0.0.1
+
+
+# spring profile, multipart, cache type(redis), redis 등 spring boot가 기본으로 제공하는 의존성들의 설정을 커스텀합니다.
 spring:
   profiles: dev
   h2:
     console:
       enabled: true
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-        use_sql_comments: true
   servlet:
     multipart:
       enabled: true
@@ -34,9 +34,13 @@ spring:
     port: 6379
 
 
+## 로깅 레벨을 설정합니다. 패키지 별로 설정 가능
 logging:
   level:
     com:
+      zaxxer:
+        hikari: DEBUG
+        HikariConfig: DEBUG
       etoos:
         bcpdemo:
           bcp:
@@ -49,57 +53,50 @@ logging:
           descriptor:
             sql: trace
 
-server:
-  port: 8081
+
+
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
 
-jpa:
-  hibernate:
-    ddl-auto: create
 
-
-app:
-  datasource:
-    strings:
-      - a
-      - b
-      - c
-      -
-      # 애플리케이션이 사용하는 프레임워크 설정을 커스텀하기 위한 프로퍼티 입니다.
-application:
-  datasource:
-    ms-holder:
-      driver-class-name: org.h2.Driver
-      url: mysql url
-      user-name: mysql username
-      password: mysql password
-    postgre-holder:
-      #      driver-class-name: org.h2.Driver
-      driver-class-name: org.postgresql.Driver
-      #      url: jdbc:h2:mem:testdb
-      url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
-      user-name: incheol
-      password: pass
-
+# properties, yml 파일의 민감정보를 암호화 하기 위한 라이브러리 설정 (bean:실제로 선언된 빈 이름, password: 암복호화에 사용되는 key)
 jasypt:
   encryptor:
-    bean: stringEncryptor
+    bean: encryptorBean
+#    password: pass
 
+config:
+  encrypt:
+    password: pass
+    algorithm: PBEWithMD5AndDES
+    provider-name: SunJCE
+    pool-size: 1
+    key-obtention-iterations: 1000
+    generator-class-name: org.jasypt.salt.RandomSaltGenerator
+    string-output-type: base64
+
+
+# 사용할 datasource DB, master-slave 별로 설정합니다. (추가시 DataSourceConfiguration에도 추가해야됨)
 datasource:
   postgres:
     master:
-      driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+#      driver-class-name: org.postgresql.Driver
+#      jdbc-url: jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: jdbc:log4jdbc:postgresql://localhost:5432/testdb?createDatabaseIfNotExist=true
       username: incheol
-      password: pass
+      # 실제 패스워드 pass
+      password: ENC(PivLxwXxFfqi/BAe1KpTdA==)
       pool-name: postgres-master
     slave-one:
-      driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://localhost:5433/postgresSlave?createDatabaseIfNotExist=true
+#      driver-class-name: org.postgresql.Driver
+#      jdbc-url: jdbc:postgresql://localhost:5433/postgresSlave?createDatabaseIfNotExist=true
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: jdbc:log4jdbc:postgresql://localhost:5433/postgresSlave?createDatabaseIfNotExist=true
       username: incheol
-      password: pass
+      # 실제 패스워드 pass
+      password: ENC(PivLxwXxFfqi/BAe1KpTdA==)
       pool-name: postgres-slave-one
 
   ms-sql:
@@ -107,17 +104,33 @@ datasource:
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
       jdbc-url: jdbc:sqlserver://localhost:1433;database=testdb
       username: SA
-      password: PassPass!!
+      # 실제 패스워드 PassPass!!
+      password: ENC(uuR4e2zrXFN890ESpDl+6Z1+vXdsQtQv)
       pool-name: ms-sql-master
     slave-one:
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
       jdbc-url: jdbc:sqlserver://localhost:1433;database=testdb
       username: SA
-      password: PassPass!!
+      # 실제 패스워드 PassPass!!
+      password: ENC(uuR4e2zrXFN890ESpDl+6Z1+vXdsQtQv)
       pool-name: ms-sql-master
 
 
-test:
-  prop: mola
+# hibernate 설정입니다.
+jpa:
+  hibernate:
+    postgres:
+      generate-ddl: true
+      hbm2ddl-auto: none
+      dialect: org.hibernate.dialect.PostgreSQL95Dialect
+      show-sql: true
+      use-jdbc-metadata-defaults: false
+
+    ms-sql:
+      generate-ddl: true
+      hbm2ddl-auto: none
+      dialect: org.hibernate.dialect.SQLServerDialect
+      show-sql: true
+
 
 ---

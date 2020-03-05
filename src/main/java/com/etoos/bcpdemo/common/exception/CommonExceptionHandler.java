@@ -26,13 +26,6 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Object> handleResponseStatusException(ResponseStatusException exception, WebRequest webRequest) {
-        HttpStatus httpStatus = exception.getStatus();
-        Object body = exception.getReason();
-        return handleExceptionInternal(exception, body, null, httpStatus, webRequest);
-    }
-
     @ExceptionHandler(CommonException.class)
     public ResponseEntity<Object> handleCommonException(CommonException commonException, WebRequest webRequest) {
         return handleExceptionInternal(commonException, commonException.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
@@ -51,8 +44,8 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ex.getStackTrace();
         log.error("{} \r\n {}", ex.getStackTrace(), request);
+        ex.printStackTrace();
         if (Objects.isNull(body))
             body = ex.getMessage();
 

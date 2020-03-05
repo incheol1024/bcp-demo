@@ -5,16 +5,10 @@ import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
 import com.etoos.bcpdemo.bcp.demo.repository.jpa.DemoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.parallel.Execution;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.transaction.Transactional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -27,7 +21,6 @@ class DemoMapperTest {
     private DemoRepository demoRepository;
 
     @Test
-    @Rollback(value = false)
     void insertDemoHibernate() {
         DemoEntity demoEntity = new DemoEntity();
         demoEntity.setName("Aa");
@@ -37,7 +30,7 @@ class DemoMapperTest {
     @Test
     void insertDemo() {
         DemoVo demoVo = new DemoVo();
-        demoVo.setId(1);
+        demoVo.setId(3);
         demoVo.setName("aa");
         demoMapper.insertDemo(demoVo);
     }

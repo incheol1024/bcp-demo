@@ -28,7 +28,7 @@ public class AspectLogger {
     /**
      * timeCheckerPointcut 포인트 컷(TimeChecker 애너테이션이 선언된)으로 지정된 곳에
      *
-     * @Around 조인포인트로 지정하는 예제입니다.
+     * @Around
      */
     @Around("timeCheckerPointcut()")
     public Object checkTimeForEachPointCut(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {

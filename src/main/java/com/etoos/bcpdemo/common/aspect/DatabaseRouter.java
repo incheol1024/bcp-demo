@@ -9,7 +9,6 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface DatabaseRouter {
 
-//    DataSourceDirection value() default DataSourceDirection.POSTGRES_MASTER;
     DataSourceDirection value();
 
 }

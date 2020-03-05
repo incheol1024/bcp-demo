@@ -22,4 +22,10 @@ public class CommonModel implements Serializable {
     private Object datas;
 
 
+    public static CommonModel create(Object datas) {
+        CommonModel commonModel = new CommonModel();
+        commonModel.setDatas(datas);
+        return commonModel;
+    }
+
 }

@@ -7,9 +7,6 @@ import org.springframework.web.server.ResponseStatusException;
 @Getter
 public class CommonException extends ResponseStatusException {
 
-    HttpStatus httpStatus;
-
-
     public CommonException(HttpStatus status) {
         super(status);
     }
@@ -21,8 +18,6 @@ public class CommonException extends ResponseStatusException {
     public CommonException(HttpStatus status, String reason, Throwable cause) {
         super(status, reason, cause);
     }
-
-
 
 
 }

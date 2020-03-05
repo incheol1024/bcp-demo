@@ -1,16 +1,19 @@
 package com.etoos.bcpdemo.common.exception;
 
-public class NotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public NotFoundException() {
-        super();
+public class NotFoundException extends CommonException {
+
+
+    public NotFoundException(HttpStatus status) {
+        super(status);
     }
 
-    public NotFoundException(String message) {
-        super(message);
+    public NotFoundException(HttpStatus status, String reason) {
+        super(status, reason);
     }
 
-    public NotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public NotFoundException(HttpStatus status, String reason, Throwable cause) {
+        super(status, reason, cause);
     }
 }
