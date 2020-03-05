@@ -9,10 +9,13 @@ import java.util.List;
 @Mapper
 @Repository
 public interface DemoMapper {
-    List<DemoVo> findById(long id);
-    void insertDemo(DemoVo demoVo);
-    void updateDemo(DemoVo demoVo);
-    void deleteDemo(DemoVo demoVo);
 
-    List<DemoVo> selectAllDemo();
+    DemoVo findById(long id);
+
+    void insertDemo(DemoVo demoVo);
+
+    void updateDemo(DemoVo demoVo);
+
+    void deleteDemo(long id);
+
 }

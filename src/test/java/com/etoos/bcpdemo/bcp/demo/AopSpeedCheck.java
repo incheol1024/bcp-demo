@@ -3,15 +3,13 @@ package com.etoos.bcpdemo.bcp.demo;
 import com.etoos.bcpdemo.bcp.demo.model.entity.DemoEntity;
 import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
 import com.etoos.bcpdemo.bcp.demo.repository.jpa.DemoRepository;
-import com.etoos.bcpdemo.bcp.demo.service.DemoService;
+import com.etoos.bcpdemo.bcp.demo.service.DemoServiceJpa;
 import com.etoos.bcpdemo.common.model.CommonModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Duration;
@@ -23,7 +21,7 @@ import java.util.Optional;
 public class AopSpeedCheck {
 
     @Autowired
-    DemoService demoService;
+    DemoServiceJpa demoServiceJpa;
 
     int loopCount;
 
@@ -42,7 +40,7 @@ public class AopSpeedCheck {
             DemoVo demoVo = new DemoVo();
             demoVo.setId(i);
             demoVo.setName("incheol");
-            demoService.createEntity(demoVo);
+            demoServiceJpa.createDemo(demoVo);
         }
         System.out.println(Duration.between(instant, Instant.now()));
 
@@ -63,7 +61,7 @@ public class AopSpeedCheck {
         demoVo.setId(1);
         demoVo.setName("aaaaa");
 
-        CommonModel entity = demoService.createEntity(demoVo);
+        CommonModel entity = demoServiceJpa.createDemo(demoVo);
         System.out.println(entity);
 
 

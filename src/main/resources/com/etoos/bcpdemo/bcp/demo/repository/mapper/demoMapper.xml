@@ -17,7 +17,7 @@
         UPDATE DEMOENTITY SET name = #{name} WHERE ID = #{id}
     </update>
 
-    <delete id="deleteDemo" parameterType="com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo">
+    <delete id="deleteDemo" parameterType="long">
         DELETE FROM DEMOENTITY WHERE ID = #{id}
     </delete>
 

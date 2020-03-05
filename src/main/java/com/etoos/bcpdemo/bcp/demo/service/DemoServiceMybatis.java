@@ -7,44 +7,47 @@ import com.etoos.bcpdemo.common.aspect.DatabaseRouter;
 import com.etoos.bcpdemo.common.constant.DataSourceDirection;
 import com.etoos.bcpdemo.common.exception.CommonException;
 import com.etoos.bcpdemo.common.model.CommonModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
-public class DemoBatisService {
+@Slf4j
+@Transactional
+@DatabaseRouter(DataSourceDirection.POSTGRES_MASTER)
+public class DemoServiceMybatis implements DemoService{
 
     @Autowired
     DemoMapper demoMapper;
 
-    @Autowired
-    DemoMsMapper demoMsMapper;
 
+    @Override
+    @DatabaseRouter(DataSourceDirection.POSTGRES_SLAVE_ONE)
+    public CommonModel findDemo(long id) {
+        DemoVo demoVo = demoMapper.findById(id);
+        return CommonModel.create(demoVo);
+    }
 
-    @Transactional(transactionManager = "transactionManagerPostgresMybatis" )
-    public CommonModel createDemoPostgres(DemoVo demoVo) {
+    @Override
+    public CommonModel createDemo(DemoVo demoVo) {
         demoMapper.insertDemo(demoVo);
-        demoMapper.insertDemo(demoVo);
-        if(Objects.nonNull(demoVo))
-            throw new CommonException(HttpStatus.INTERNAL_SERVER_ERROR);
-        return getCommonModel(demoVo);
+        return CommonModel.create(demoVo);
     }
 
-    @DatabaseRouter(DataSourceDirection.MS_SQL_MASTER)
-    public CommonModel createDemoMsSql(DemoVo demoVo) {
-        demoMsMapper.insertDemo(demoVo);
-        return getCommonModel(demoVo);
+    @Override
+    public CommonModel updateDemo(DemoVo demoVo) {
+        demoMapper.updateDemo(demoVo);
+        return CommonModel.create(demoVo);
     }
 
-    private CommonModel getCommonModel(DemoVo demoVo) {
-        CommonModel commonModel = new CommonModel();
-        commonModel.setDatas(demoVo);
-        return commonModel;
+    @Override
+    public CommonModel deleteDemo(long id) {
+        demoMapper.deleteDemo(id);
+        return new CommonModel();
     }
-
-
-
 }

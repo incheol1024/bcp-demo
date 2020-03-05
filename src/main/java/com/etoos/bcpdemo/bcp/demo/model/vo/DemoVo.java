@@ -2,7 +2,9 @@ package com.etoos.bcpdemo.bcp.demo.model.vo;
 
 import com.etoos.bcpdemo.bcp.demo.model.entity.DemoEntity;
 import com.etoos.bcpdemo.common.model.CommonModel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
 import javax.validation.constraints.Min;
@@ -14,6 +16,8 @@ import static com.etoos.bcpdemo.common.constant.CrudInterface.Create;
 
 @Data
 @Alias("demo")
+@AllArgsConstructor
+@NoArgsConstructor
 public class DemoVo{
 
     @Min(value = 0, groups = Create.class)
@@ -22,11 +26,9 @@ public class DemoVo{
     @NotNull(groups = Create.class)
     private String name;
 
-
-    public DemoVo valueOf(DemoEntity demoEntity) {
-        this.id = demoEntity.getId();
-        this.name = demoEntity.getName();
-        return this;
+    public static DemoVo createDemoVo(DemoEntity demoEntity) {
+        DemoVo demoVo = new DemoVo(demoEntity.getId(), demoEntity.getName());
+        return demoVo;
     }
 
 }

@@ -3,6 +3,7 @@ package com.etoos.bcpdemo.bcp.demo.controller;
 import com.etoos.bcpdemo.bcp.demo.model.entity.DemoEntity;
 import com.etoos.bcpdemo.bcp.demo.model.vo.DemoVo;
 import com.etoos.bcpdemo.bcp.demo.service.DemoService;
+import com.etoos.bcpdemo.bcp.demo.service.DemoServiceJpa;
 import com.etoos.bcpdemo.common.aspect.TimeChecker;
 import com.etoos.bcpdemo.common.model.CommonModel;
 import io.swagger.annotations.Api;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,16 +38,10 @@ import static com.etoos.bcpdemo.common.constant.CrudInterface.Update;
         , produces = MediaType.APPLICATION_JSON_VALUE)
 public class DemoController {
 
+
     @Autowired
-    DemoService demoService;
-
-
-    // mybatis test
-    @PostMapping("/mybatis")
-    public CommonModel createDemo(@RequestBody DemoVo demoVo) {
-        return demoService.createDemo(demoVo);
-    }
-
+    @Qualifier("demoServiceJpa")
+    DemoService demoServiceJpa;
 
 
     @PostMapping(value = ""
@@ -60,9 +56,9 @@ public class DemoController {
             , @ApiImplicitParam(name = "name", value = "등록할 이름을 보내주세요. ex) hong gil dong")})
     @CachePut(value = "DemoVo", key = "#demoVo.id") // 최종 리턴 결과만 캐시에 저장함. 캐시에서 찾을 생각을 안함.
     @TimeChecker
-    public CommonModel createEntity(@Validated(value = Create.class) @RequestBody DemoVo demoVo) {
+    public CommonModel createDemo(@Validated(value = Create.class) @RequestBody DemoVo demoVo) {
         log.info("{}", demoVo);
-        return demoService.createEntity(demoVo);
+        return demoServiceJpa.createDemo(demoVo);
     }
 
     @GetMapping(value = "/{id}"
@@ -74,8 +70,8 @@ public class DemoController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id", value = "조회할 아이디 값 ex) 1")})
     @Cacheable(value = "DemoVo", key = "#id") // 캐시에서 먼저 조회하고, 없으면 핸들러 메소드 실행후 결과값 캐시에 저장
     @TimeChecker
-    public CommonModel findEntity(@PathVariable long id) {
-        return demoService.findEntity(id);
+    public CommonModel findDemo(@PathVariable long id) {
+        return demoServiceJpa.findDemo(id);
     }
 
     @PutMapping("/{id}")
@@ -86,8 +82,8 @@ public class DemoController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id", value = "변경하고 싶은 아이디 값 ex) 1")
             , @ApiImplicitParam(name = "name", value = "변경할 이름 ex) kim gil dong")})
     @CachePut(value = "DemoVo", key = "#demoVo.id")
-    public CommonModel updateEntity(@Validated(value = Update.class) DemoVo demoVo) {
-        return demoService.updateEntity(demoVo);
+    public CommonModel updateDemo(@Validated(value = Update.class) DemoVo demoVo) {
+        return demoServiceJpa.updateDemo(demoVo);
     }
 
     @DeleteMapping("/{id}")
@@ -101,8 +97,8 @@ public class DemoController {
             , dataType = "long"
             , paramType = "path")})
     @CacheEvict(value = "DemoVo", key = "#id") // 캐시 삭제
-    public CommonModel deleteEntity(@PathVariable long id) {
-        return demoService.deleteEntity(id);
+    public CommonModel deleteDemo(@PathVariable long id) {
+        return demoServiceJpa.deleteDemo(id);
     }
 
     @GetMapping("/test")
