@@ -1,6 +1,5 @@
 package com.etoos.bcpdemo.common.config;
 
-import com.etoos.bcpdemo.common.aspect.DataSourceKeyThreadHolder;
 import com.etoos.bcpdemo.common.constant.DataSourceDirection;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;

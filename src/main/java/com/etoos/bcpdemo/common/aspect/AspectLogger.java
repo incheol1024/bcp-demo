@@ -27,7 +27,7 @@ public class AspectLogger {
 
     /**
      * timeCheckerPointcut 포인트 컷(TimeChecker 애너테이션이 선언된)으로 지정된 곳에
-     *
+     * Around 어드바이스를 적용하는 예제입니다.
      * @Around
      */
     @Around("timeCheckerPointcut()")
@@ -35,18 +35,7 @@ public class AspectLogger {
         return getObjectAndPrintTime(proceedingJoinPoint);
     }
 
-    /**
-     * @taget 으로 지정된 애너테이션이 선언된 부분의 모든 결합점(클래스에 선언시 모든 메서드에 적용하기 위함)을
-     * 포인트컷으로 사용하기 위한 aspect 메서드 입니다.
-     */
-/*
-    @Around(value = "@target(com.etoos.bcpdemo.common.aspect.TimeChecker)")
-    public Object checkerTimeForAllPointCut(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        return getObjectAndPrintTime(proceedingJoinPoint);
-    }
-*/
-
-    private Object getObjectAndPrintTime(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+     private Object getObjectAndPrintTime(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
         Method method = signature.getMethod();
 
@@ -57,10 +46,8 @@ public class AspectLogger {
         return proceed;
     }
 
-
-
     /**
-     * execution 표현식으로 포인트컷을 정의하여 사용하며, 조인포인트는 Before가 됩니다.
+     * execution 표현식으로 포인트컷을 정의하여 사용하며
      * 예제의 표현식은 DemoController 클래스의 아규먼트가 0개 이상인 모든 메소드를 가리킵니다.
      */
     @Before("execution(* com.etoos.bcpdemo.bcp.demo.controller.DemoController.*(..))")

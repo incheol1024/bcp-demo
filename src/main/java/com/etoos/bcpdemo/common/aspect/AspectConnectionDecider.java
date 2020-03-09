@@ -1,5 +1,6 @@
 package com.etoos.bcpdemo.common.aspect;
 
+import com.etoos.bcpdemo.common.config.DataSourceKeyThreadHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -31,7 +32,7 @@ public class AspectConnectionDecider {
             DataSourceKeyThreadHolder.setDataSourceKey(annotation.value());
         }
 
-//        log.info("start to decide connection");
+        log.info("start to decide connection");
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         annotation = method.getAnnotation(DatabaseRouter.class);
