@@ -34,7 +34,7 @@
   * Exception 설정  
    ![exception-proecss](/meta/img/exception-process.jpg)  
   
-  [Exception 코드 보러가기](#Exception-Sample)
+  [Exception 코드 보러가기](#exception-sample)
   
   
   
