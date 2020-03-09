@@ -30,53 +30,23 @@
   | Multipart Resolver | Mulipart Resolver 설정 (Default Standard Multipart) |      |
   | Exception          | Exception 공통 처리 및 각 핸들러 별 처리            |      |
   | Validation         | 핸들러 메서드 아규먼트 유효성 검증                  |      |
-  | HATEOAS            | 헤이토스가 무엇인지??..                           |      |
   
   * Exception 설정  
    ![exception-proecss](/meta/img/exception-process.jpg)  
   
-```java
-@Slf4j
-@ControllerAdvice
-public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> handleNotFoundException(NotFoundException exception, WebRequest webRequest) {
-        log.error("{} \r\n {}", exception, webRequest);
-        ErrorMessage errorMessage = new ErrorMessage();
-        errorMessage.setMessage(exception.getMessage());
-        errorMessage.setDebugMessage(exception.getLocalizedMessage());
-        errorMessage.setTimestamp(LocalDateTime.now());
-        errorMessage.setStatus(HttpStatus.NOT_FOUND);
-        return this.handleExceptionInternal(exception, errorMessage, new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
-    }
-
-}
-```
-    
-```java
-@Data
-public class ErrorMessage {
-
-    private HttpStatus status;
-
-    private String message;
-
-    private String debugMessage;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-    private LocalDateTime timestamp;
-
-
-}
-```
+  [Exception 코드 보러가기](#Exception-Sample)
+  
+  
   
   * Validation 설정
     * validation 대상 객체
+    
 ```java
 @Data
 @Alias("demo")
-public class DemoVo {
+@AllArgsConstructor
+@NoArgsConstructor
+public class DemoVo{
 
     @Min(value = 0, groups = Create.class)
     private long id;
@@ -84,13 +54,11 @@ public class DemoVo {
     @NotNull(groups = Create.class)
     private String name;
 
-
-    public DemoVo valueOf(DemoEntity demoEntity) {
-        this.id = demoEntity.getId();
-        this.name = demoEntity.getName();
-        return this;
+    public static DemoVo createDemoVo(DemoEntity demoEntity) {
+        DemoVo demoVo = new DemoVo(demoEntity.getId(), demoEntity.getName());
+        return demoVo;
     }
-    
+
 }
 ```  
   
@@ -107,13 +75,12 @@ public interface CrudInterface {
   
   * Validation 사용
 ```java
-    @PostMapping("")
-    public ResponseEntity<DemoVo> createEntity(@Validated(value = Create.class) DemoVo demoVo) {
-        demoVo = demoService.createEntity(demoVo);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity(demoVo, httpHeaders, HttpStatus.OK);
+public class DemoController {
+    public CommonModel createDemo(@Validated(value = Create.class) @RequestBody DemoVo demoVo) {
+        log.info("{}", demoVo);
+        return demoServiceJpa.createDemo(demoVo);
     }
+}
 ```
       
 * **참고 사항**
@@ -885,6 +852,8 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
   
  
  
+#Exception Sample
+
  
  
  
