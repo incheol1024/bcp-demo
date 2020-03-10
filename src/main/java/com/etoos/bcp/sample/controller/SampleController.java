@@ -48,7 +48,6 @@ public class SampleController {
     @ApiOperation(value = "DemoEntity를 조회합니다. id를 url 끝에 작성하여 보내주세요."
             , produces = MediaType.APPLICATION_JSON_VALUE, response = ResponseVo.class)
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id", value = "조회할 아이디 값 ex) 1")})
-    @Cacheable(value = "DemoVo", key = "#id") // 캐시에서 먼저 조회하고, 없으면 핸들러 메소드 실행후 결과값 캐시에 저장
     @TimeCheckerAspect
     public ResponseVo findSample(SampleVo sampleVo) {
         return ResponseVo.create(sampleService.findSample(sampleVo));
@@ -61,7 +60,6 @@ public class SampleController {
             , response = ResponseVo.class)
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id", value = "변경하고 싶은 아이디 값 ex) 1")
             , @ApiImplicitParam(name = "name", value = "변경할 이름 ex) kim gil dong")})
-    @CachePut(value = "DemoVo", key = "#demoVo.id")
     public ResponseVo updateDemo(@Validated(value = CrudInterface.Update.class) SampleVo sampleVo) {
         return ResponseVo.create(sampleService.updateSample(sampleVo));
     }
@@ -76,7 +74,6 @@ public class SampleController {
             , required = true
             , dataType = "long"
             , paramType = "path")})
-    @CacheEvict(value = "DemoVo", key = "#id") // 캐시 삭제
     public ResponseVo deleteDemo(@PathVariable SampleVo sampleVo) {
         return ResponseVo.create(sampleService.deleteSample(sampleVo));
     }
