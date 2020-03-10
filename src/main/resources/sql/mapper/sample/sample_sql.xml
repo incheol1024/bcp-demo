@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper namespace="com.etoos.bcp.sample.repository.SampleMapper">
+	<select id="selectUser" resultType="sampleVo">
+		select email, mod_dt, mod_user, phone_number, reg_dt, reg_user, user_account
+		from tb_user
+	</select>
+	
+	<insert id="insertUser" parameterType="sampleVo">
+	    insert into tb_user (email, mod_dt, mod_user, phone_number, reg_dt, reg_user, user_account) 
+	    values (#{email}, #{modDt}, #{modUser}, #{phoneNumber}, #{regDt}, #{regUser}, #{userAccount})
+	</insert>
+</mapper>

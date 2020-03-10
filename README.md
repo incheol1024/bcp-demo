@@ -30,17 +30,91 @@
   | Multipart Resolver | Mulipart Resolver 설정 (Default Standard Multipart) |      |
   | Exception          | Exception 공통 처리 및 각 핸들러 별 처리            |      |
   | Validation         | 핸들러 메서드 아규먼트 유효성 검증                  |      |
+  | HATEOAS            | 헤이토스가 무엇인지??..                           |      |
   
-    
-  [Filter 코드 샘플](#filter-sample)
-  [Interceptor 코드 샘플](#interceptor-sample)
-  [Exception 코드 샘플](#exception-sample)
-  [Valdation 코드 샘플](#validation-sample)
+  * Exception 설정  
+   ![exception-proecss](/meta/img/exception-process.jpg)  
   
-  
-  
-  
+```java
+@Slf4j
+@ControllerAdvice
+public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException exception, WebRequest webRequest) {
+        log.error("{} \r\n {}", exception, webRequest);
+        ErrorMessage errorMessage = new ErrorMessage();
+        errorMessage.setMessage(exception.getMessage());
+        errorMessage.setDebugMessage(exception.getLocalizedMessage());
+        errorMessage.setTimestamp(LocalDateTime.now());
+        errorMessage.setStatus(HttpStatus.NOT_FOUND);
+        return this.handleExceptionInternal(exception, errorMessage, new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
+    }
+
+}
+```
+    
+```java
+@Data
+public class ErrorMessage {
+
+    private HttpStatus status;
+
+    private String message;
+
+    private String debugMessage;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    private LocalDateTime timestamp;
+
+
+}
+```
+  
+  * Validation 설정
+    * validation 대상 객체
+```java
+@Data
+@Alias("demo")
+public class DemoVo {
+
+    @Min(value = 0, groups = Create.class)
+    private long id;
+
+    @NotNull(groups = Create.class)
+    private String name;
+
+
+    public DemoVo valueOf(DemoEntity demoEntity) {
+        this.id = demoEntity.getId();
+        this.name = demoEntity.getName();
+        return this;
+    }
+    
+}
+```  
+  
+  * Validation group Interface
+```java
+public interface CrudInterface {
+
+    interface Create { }
+
+    interface Update { }
+
+}
+```
+  
+  * Validation 사용
+```java
+    @PostMapping("")
+    public ResponseEntity<DemoVo> createEntity(@Validated(value = Create.class) DemoVo demoVo) {
+        demoVo = demoService.createEntity(demoVo);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity(demoVo, httpHeaders, HttpStatus.OK);
+    }
+```
       
 * **참고 사항**
   * @EnableWebMvc 사용 금지 -  Spring boot 자동 설정을 사용하지 못함
@@ -811,108 +885,10 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
   
  
  
-### Exception Sample  
-  
-  * Exception 처리 참고 그림  
-   ![exception-proecss](/meta/img/exception-process.jpg)  
-
-  * Exception 처리 공통 핸들러
-    * 요청 처리중에 발생하는 모든 Exception은 하나의 처리 핸들러가 담당합니다.
-    * 처리 핸들러에 도달하기 전에  
-```java
-@Slf4j
-@RestControllerAdvice
-public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
-
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> handleNotFoundException(NotFoundException exception, WebRequest webRequest) {
-        return handleExceptionInternal(exception, exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
-    }
-
-    @ExceptionHandler(CommonException.class)
-    public ResponseEntity<Object> handleCommonException(CommonException commonException, WebRequest webRequest) {
-        return handleExceptionInternal(commonException, commonException.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> handleRuntimeException(RuntimeException runtimeException, WebRequest webRequest) {
-        return handleExceptionInternal(runtimeException, runtimeException.getMessage(), null, HttpStatus.INTERNAL_SERVER_ERROR, webRequest);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        BindingResult bindingResult = ex.getBindingResult();
-        return handleExceptionInternal(ex, ValidationResult.create(bindingResult), headers, status, request);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        log.error("{} \r\n {}", ex.getStackTrace(), request);
-        ex.printStackTrace();
-        if (Objects.isNull(body))
-            body = ex.getMessage();
-
-        Info info = Info.create(String.valueOf(status.value()), status.name(), body);
-        CommonModel commonModel = new CommonModel();
-        commonModel.setInfo(info);
-
-        return super.handleExceptionInternal(ex, commonModel, headers, status, request);
-    }
-
-}
-```
  
  
  
- 
-### Validation Sample
 
-  * Validation 설정
-    * validation 대상 객체
-    * javax.validation.constraints 패키지의 검증 애너테이션을 사용합니다.
-```java
-@Data
-@Alias("demo")
-@AllArgsConstructor
-@NoArgsConstructor
-public class DemoVo{
-
-    @Min(value = 0, groups = Create.class)
-    private long id;
-
-    @NotNull(groups = Create.class)
-    private String name;
-
-    public static DemoVo createDemoVo(DemoEntity demoEntity) {
-        DemoVo demoVo = new DemoVo(demoEntity.getId(), demoEntity.getName());
-        return demoVo;
-    }
-
-}
-```  
-  
-  * Validation group Interface
-    * 동일 객체에 상황별 유효성 체크를 다르게 가져가기 위해서 CrudInterface 마커 인터페이스를 활용하여 validation 그룹을 지정합니다.
-```java
-public interface CrudInterface {
-
-    interface Create { }
-
-    interface Update { }
-
-}
-```
-  
-  * Validation 사용 예시
-```java
-public class DemoController {
-    public CommonModel createDemo(@Validated(value = Create.class) @RequestBody DemoVo demoVo) {
-        log.info("{}", demoVo);
-        return demoServiceJpa.createDemo(demoVo);
-    }
-}
-```
 
 
 
