@@ -11,4 +11,29 @@
 	    insert into tb_user (email, mod_dt, mod_user, phone_number, reg_dt, reg_user, user_account) 
 	    values (#{email}, #{modDt}, #{modUser}, #{phoneNumber}, #{regDt}, #{regUser}, #{userAccount})
 	</insert>
+
+	<select id="findSample">
+		select * from tb_user
+		where
+		user_account=#{userAccount}
+	</select>
+
+	<update id="updateSample" parameterType="sampleVo">
+		update tb_user
+		set
+		email=#{email}
+		,mod_dt=#{modDt}
+		,mod_user=#{modUser}
+		,phone_number=#{phoneNumber}
+		,reg_dt=#{regDt}
+		,reg_user=#{regUser}
+		,user_account=#{userAccount}
+	</update>
+
+	<delete id="deleteSample" parameterType="sampleVo">
+		delete from tb_user
+		where
+		user_account=#{userAccount}
+	</delete>
+
 </mapper>

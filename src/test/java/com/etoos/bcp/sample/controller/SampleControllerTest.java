@@ -1,4 +1,4 @@
-package com.etoos.bcpdemo.bcp.demo.controller;
+package com.etoos.bcp.sample.controller;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
 @TestMethodOrder(OrderAnnotation.class)
-class DemoControllerTest {
+class SampleControllerTest {
 
     @Autowired
     MockMvc mockMvc;

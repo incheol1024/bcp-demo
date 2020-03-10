@@ -32,5 +32,20 @@ public class SampleServiceImpl implements SampleService {
         return sampleMapper.selectUser();
     }
 
+    @Override
+    public SampleVo findSample(SampleVo sampleVo) {
+        return sampleMapper.findSample();
+    }
 
+    @Override
+    public SampleVo updateSample(SampleVo sampleVo) {
+        sampleMapper.updateSample();
+        return sampleVo;
+    }
+
+    @Override
+    public SampleVo deleteSample(SampleVo sampleVo) {
+        sampleMapper.deleteSample();
+        return sampleVo;
+    }
 }

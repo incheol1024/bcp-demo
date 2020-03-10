@@ -1,4 +1,4 @@
-package com.etoos.bcpdemo;
+package com.etoos;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

@@ -9,4 +9,13 @@ import com.etoos.bcp.sample.model.SampleVo;
 @Mapper
 public interface SampleMapper {
     List<SampleVo> selectUser();
+
+
+    SampleVo findSample();
+
+
+    void updateSample();
+
+
+    void deleteSample();
 }

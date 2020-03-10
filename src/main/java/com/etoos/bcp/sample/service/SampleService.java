@@ -10,4 +10,10 @@ public interface SampleService {
     public List<SampleVo> retrieveMybatis() throws CommonException;
 
     public List<SampleVo> retrieveMybatisRead() throws CommonException;
+
+    SampleVo findSample(SampleVo sampleVo);
+
+    SampleVo updateSample(SampleVo demoVo);
+
+    SampleVo deleteSample(SampleVo sampleVo);
 }

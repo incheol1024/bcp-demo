@@ -1,5 +1,7 @@
 package com.etoos.common.model;
 
+import com.etoos.bcp.common.model.CommonVo;
+import com.etoos.bcp.sample.model.SampleVo;
 import lombok.Data;
 
 /**
@@ -19,4 +21,9 @@ public class ResponseVo {
 
     private Object datas;
 
+    public static ResponseVo create(Object object) {
+        ResponseVo responseVo = new ResponseVo();
+        responseVo.setDatas(object);
+        return responseVo;
+    }
 }
