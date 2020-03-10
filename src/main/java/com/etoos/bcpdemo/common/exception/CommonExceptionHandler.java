@@ -21,8 +21,6 @@ import java.util.Objects;
 public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-
-
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(NotFoundException exception, WebRequest webRequest) {
         return handleExceptionInternal(exception, exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
@@ -57,6 +55,5 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         return super.handleExceptionInternal(ex, commonModel, headers, status, request);
     }
-
 
 }

@@ -1,7 +1,6 @@
 package com.etoos.bcpdemo.bcp.demo.model.vo;
 
 import com.etoos.bcpdemo.bcp.demo.model.entity.DemoEntity;
-import com.etoos.bcpdemo.common.model.CommonModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +8,6 @@ import org.apache.ibatis.type.Alias;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import java.io.Serializable;
 
 import static com.etoos.bcpdemo.common.constant.CrudInterface.Create;
 
