@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.etoos.common.constants.CrudInterface;
 import org.apache.ibatis.type.Alias;
 import org.hibernate.validator.constraints.CreditCardNumber;
 
@@ -36,8 +37,8 @@ public class SampleVo extends CommonVo {
     private String email1;
 
     // @Min, @Max annotation 으로 최소, 최대값을 지정한다.
-    @Min(18)
-    @Max(30)
+    @Min(value = 18, groups = CrudInterface.Create.class)
+    @Max(value = 30, groups = CrudInterface.Create.class)
     private int age;
 
     // 신용카드번호의 유효성을 판단한다.

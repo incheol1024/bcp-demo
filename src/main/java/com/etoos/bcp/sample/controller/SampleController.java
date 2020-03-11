@@ -6,21 +6,20 @@ import com.etoos.bcp.sample.service.SampleService;
 import com.etoos.common.aspect.TimeCheckerAspect;
 import com.etoos.common.constants.CrudInterface;
 import com.etoos.common.constants.CrudInterface.Create;
-import com.etoos.common.model.ResponseVo;
+import com.etoos.common.exception.CommonException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @Api(value = "SampleController Api annotation", tags = {"샘플"}, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -46,36 +45,40 @@ public class SampleController {
     @GetMapping(value = ""
             , produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "DemoEntity를 조회합니다. id를 url 끝에 작성하여 보내주세요."
-            , produces = MediaType.APPLICATION_JSON_VALUE, response = ResponseVo.class)
+            , produces = MediaType.APPLICATION_JSON_VALUE, response = SampleVo.class)
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id", value = "조회할 아이디 값 ex) 1")})
     @TimeCheckerAspect
-    public ResponseVo findSample(SampleVo sampleVo) {
-        return ResponseVo.create(sampleService.findSample(sampleVo));
+    public SampleVo findSample(@Validated(CrudInterface.Create.class) SampleVo sampleVo) {
+        if(Objects.nonNull(sampleVo))
+            throw new CommonException("ze");
+        sampleVo.setAge(1);
+        sampleVo.setEmail("aa@aaa.com");
+        return sampleVo;
     }
 
     @PutMapping("/{id}")
     @ApiOperation(value = "DemoEntity를 수정합니다. id와 변경할 값을 보내주세요."
             , consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE
-            , response = ResponseVo.class)
+            , response = SampleVo.class)
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id", value = "변경하고 싶은 아이디 값 ex) 1")
             , @ApiImplicitParam(name = "name", value = "변경할 이름 ex) kim gil dong")})
-    public ResponseVo updateDemo(@Validated(value = CrudInterface.Update.class) SampleVo sampleVo) {
-        return ResponseVo.create(sampleService.updateSample(sampleVo));
+    public SampleVo updateDemo(@Validated(value = CrudInterface.Update.class) SampleVo sampleVo) {
+        return sampleService.updateSample(sampleVo);
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "DemoEntity를 삭제합니다. 삭제할 아이디를 url 패스 끝에 적어주세요."
             , consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE
-            , response = ResponseVo.class)
+            , response = SampleVo.class)
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id"
             , value = "삭제할 아이디 값 ex) 1"
             , required = true
             , dataType = "long"
             , paramType = "path")})
-    public ResponseVo deleteDemo(@PathVariable SampleVo sampleVo) {
-        return ResponseVo.create(sampleService.deleteSample(sampleVo));
+    public SampleVo deleteDemo(@PathVariable SampleVo sampleVo) {
+        return sampleService.deleteSample(sampleVo);
     }
 
 }
