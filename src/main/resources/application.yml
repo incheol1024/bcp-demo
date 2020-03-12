@@ -89,12 +89,12 @@ datasource:
   postgres:
     default:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-#      jdbc-url: jdbc:postgresql://192.168.4.131:5432/postgres?currentSchema=bcp&stringtype=unspecified
-#      username: postgres
-#      password: postgres
-      jdbc-url: jdbc:log4jdbc:postgresql://localhost:5432/testdb
-      username: incheol
-      password: pass
+      jdbc-url: jdbc:postgresql://192.168.4.131:5432/postgres?currentSchema=bcp&stringtype=unspecified
+      username: postgres
+      password: postgres
+#      jdbc-url: jdbc:log4jdbc:postgresql://localhost:5432/testdb
+#      username: incheol
+#      password: pass
 
     bcp-read:
       driver-class-name: org.postgresql.Driver
