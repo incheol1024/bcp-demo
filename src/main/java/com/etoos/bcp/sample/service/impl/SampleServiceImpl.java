@@ -27,6 +27,12 @@ public class SampleServiceImpl implements SampleService {
     }
 
     @Override
+    public SampleVo insertSample(SampleVo sampleVo) {
+        sampleMapper.insertUser(sampleVo);
+        return sampleVo;
+    }
+
+    @Override
     @DataSource(DataSourceType.BCPREAD)
     public List<SampleVo> retrieveMybatisRead() throws CommonException {
         return sampleMapper.selectUser();
@@ -34,7 +40,7 @@ public class SampleServiceImpl implements SampleService {
 
     @Override
     public SampleVo findSample(SampleVo sampleVo) {
-        return sampleMapper.findSample();
+        return sampleMapper.findSample(sampleVo);
     }
 
     @Override
@@ -48,4 +54,5 @@ public class SampleServiceImpl implements SampleService {
         sampleMapper.deleteSample();
         return sampleVo;
     }
+
 }

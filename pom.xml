@@ -206,6 +206,7 @@
 					<include>**/application*.yaml</include>
 					<include>**/application*.properties</include>
 					<include>**/*.xml</include>
+					<include>**/*log*.properties</include>
 				</includes>
 			</resource>
 		</resources>
@@ -271,7 +272,7 @@
 						<goals>
 							<goal>build-info</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>compile</phase>
 						<configuration>
 							<additionalProperties>
 								<java.version>${java.version}</java.version>

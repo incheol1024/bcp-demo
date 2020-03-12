@@ -10,7 +10,7 @@ mybatis:
     aggressive-lazy-loading: false
     map-underscore-to-camel-case: true
     cache-enabled: true
-    default-executor-type: batch
+    default-executor-type: simple
     
 
           
@@ -50,7 +50,7 @@ spring:
     hibernate:
       ddl-auto: create
       use-new-id-generator-mappings: false
-    
+
 logging:
   level:
     com:
@@ -65,7 +65,14 @@ logging:
         type:
           descriptor:
             sql: TRACE
-            
+    jdbc.connection: WARN
+    jdbc.sqlonly: WARN
+    jdbc.sqltiming: DEBUG
+    jdbc.resultset: WARN
+    jdbc.resultsettable: WARN
+    jdbc.audit: WARN
+
+
 jasypt:
   encryptor:
     bean: encryptorBean
@@ -81,11 +88,14 @@ config:
 datasource:
   postgres:
     default:
-      driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://192.168.4.131:5432/postgres?currentSchema=bcp&stringtype=unspecified
-      username: postgres
-      password: postgres
-      
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+#      jdbc-url: jdbc:postgresql://192.168.4.131:5432/postgres?currentSchema=bcp&stringtype=unspecified
+#      username: postgres
+#      password: postgres
+      jdbc-url: jdbc:log4jdbc:postgresql://localhost:5432/testdb
+      username: incheol
+      password: pass
+
     bcp-read:
       driver-class-name: org.postgresql.Driver
       jdbc-url: jdbc:postgresql://192.168.4.131:5432/postgres?currentSchema=bcp&stringtype=unspecified

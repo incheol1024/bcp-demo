@@ -16,4 +16,6 @@ public interface SampleService {
     SampleVo updateSample(SampleVo demoVo);
 
     SampleVo deleteSample(SampleVo sampleVo);
+
+    SampleVo insertSample(SampleVo sampleVo);
 }

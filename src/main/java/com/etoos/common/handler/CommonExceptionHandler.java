@@ -41,6 +41,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ex.printStackTrace();
         log.error("{} \r\n {}", ex.getStackTrace(), request);
         if (Objects.isNull(body))
             body = ex.getMessage();

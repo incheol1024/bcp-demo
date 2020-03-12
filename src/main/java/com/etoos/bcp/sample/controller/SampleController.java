@@ -37,9 +37,15 @@ public class SampleController {
             , @ApiImplicitParam(name = "name", value = "등록할 이름을 보내주세요. ex) hong gil dong")
     })
     @TimeCheckerAspect
-    public List<SampleVo> createEntity(@Validated(value = Create.class) @RequestBody SampleVo demoVo) {
-        log.info("{}", demoVo);
+    public List<SampleVo> createEntity(@Validated(value = Create.class) @RequestBody SampleVo sampleVo) {
+        log.info("{}", sampleVo);
         return sampleService.retrieveMybatis();
+    }
+
+    @PostMapping("/create")
+    public SampleVo createSample(@Validated(value = Create.class) @RequestBody SampleVo sampleVo) {
+        log.info("{}", sampleVo);
+        return sampleService.insertSample(sampleVo);
     }
 
     @GetMapping(value = ""
@@ -48,12 +54,8 @@ public class SampleController {
             , produces = MediaType.APPLICATION_JSON_VALUE, response = SampleVo.class)
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id", value = "조회할 아이디 값 ex) 1")})
     @TimeCheckerAspect
-    public SampleVo findSample(@Validated(CrudInterface.Create.class) SampleVo sampleVo) {
-        if(Objects.nonNull(sampleVo))
-            throw new CommonException("ze");
-        sampleVo.setAge(1);
-        sampleVo.setEmail("aa@aaa.com");
-        return sampleVo;
+    public SampleVo findSample(@Valid SampleVo sampleVo) {
+        return sampleService.findSample(sampleVo);
     }
 
     @PutMapping("/{id}")

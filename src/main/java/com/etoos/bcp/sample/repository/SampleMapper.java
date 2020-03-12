@@ -11,11 +11,16 @@ public interface SampleMapper {
     List<SampleVo> selectUser();
 
 
-    SampleVo findSample();
+    void insertUser(SampleVo sampleVo);
+
+
+    SampleVo findSample(SampleVo sampleVo);
 
 
     void updateSample();
 
 
     void deleteSample();
+
+
 }

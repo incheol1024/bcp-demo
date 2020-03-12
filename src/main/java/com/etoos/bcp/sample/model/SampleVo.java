@@ -45,4 +45,12 @@ public class SampleVo extends CommonVo {
     @CreditCardNumber
     private String creditCardNumber;
 
+    private String modDt;
+    private String modUser;
+    private String phoneNumber;
+    private String regDt;
+    private String regUser;
+    private String userAccount;
+
+
 }
