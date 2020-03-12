@@ -11,8 +11,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 public class BcpApplication {
 
     public static void main(String[] args) {
-
-        System.out.println(System.getProperty("log4jdbc.log4j2.properties.file"));
         SpringApplication.run(BcpApplication.class, args);
     }
 
