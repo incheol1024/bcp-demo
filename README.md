@@ -1,10 +1,11 @@
-#1. 소개 
+# 1. 소개  
+------------------------------------------------------------------------   
   - 배치표와 관련된 프로젝트 공통 셋업 환경이며 아래와 같은 기술 스택 및 라이브러리를 사용합니다.
    maven pom.xml에 기술한 의존성 목록을 나열한 것입니다.  
    버전이 명시 되지 않은 것은 Spring boot 부모 dependency 버전을 따릅니다.
-  - 언어
+  - **언어**
     - Java8 (Open JDK)
-  - 프레임워크 
+  - **프레임워크** 
     - spring boot 2.2.4 
     - spring-boot-starter-web
     - spring-boot-starter-security
@@ -19,7 +20,7 @@
     - spring-boot-devtools
     - spring-boot-configuration-processor
     - spring-boot-autoconfigure-processor
-  - 라이브러리
+  - **라이브러리**
     - postgresql
     - mssql-jdbc
     - lombok
@@ -34,18 +35,19 @@
     - jasypt-spring-boot-starter
     - log4jdbc-log4j2-jdbc4.1
     - logbook-spring-boot-starter 2.0.0
-    - logboot-json 2.0.0
+    - logbook-json 2.0.0
     - lucy-xss-servlet 2.0.0
      
   - 빌드 환경
     - Maven 3.x.x
-    - jenkins (?)
+    - ~~jenkins (?)~~
   - 레파지토리
-    - git
-   
+    - git   
+     
+------------------------------------------------------------------------  
     
-    
-    
+# 2. Quick Start
+ [1. Spring Web MVC 설정 보러 가기](/meta/doc/web-mvc.md)
   
 
 # Spring Boot 2.2.4 (2020.02.12 기준 GA)
@@ -54,121 +56,6 @@
 
 
 
-## 1. spring-webmvc 5.2.3.RELEASE
-
-* **Dependency**
-
-  ```xml
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-  ```
-
-    
-
-* **설정 목록**
-  * MVC 설정 및 Spring core 설정을 포함합니다.    
-  
-  
-  | 목록               | 내용                                                | 설명 |
-  | ------------------ | --------------------------------------------------- | ---- |
-  | DispatcherServlet  | 요청 URL 설정 (/**)                                 |      |
-  | Filter             | 공통 Filter 및 URL 패스 별 필터 처리 설정           |      |
-  | Interceptor        | 핸들러 Interceptor 설정                             |      |
-  | CORS               | CORS 설정                                           |      |
-  | Multipart Resolver | Mulipart Resolver 설정 (Default Standard Multipart) |      |
-  | Exception          | Exception 
-  | Validation         | 핸들러 메서드 아규먼트 유효성 검증                  |      |
-  | HATEOAS            | 헤이토스가 무엇인지??..                           |      |
-  
-  * Exception 설정  
-   ![exception-proecss](/meta/img/exception-process.jpg)  
-  
-```java
-@Slf4j
-@ControllerAdvice
-public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> handleNotFoundException(NotFoundException exception, WebRequest webRequest) {
-        log.error("{} \r\n {}", exception, webRequest);
-        ErrorMessage errorMessage = new ErrorMessage();
-        errorMessage.setMessage(exception.getMessage());
-        errorMessage.setDebugMessage(exception.getLocalizedMessage());
-        errorMessage.setTimestamp(LocalDateTime.now());
-        errorMessage.setStatus(HttpStatus.NOT_FOUND);
-        return this.handleExceptionInternal(exception, errorMessage, new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
-    }
-
-}
-```
-    
-```java
-@Data
-public class ErrorMessage {
-
-    private HttpStatus status;
-
-    private String message;
-
-    private String debugMessage;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-    private LocalDateTime timestamp;
-
-
-}
-```
-  
-  * Validation 설정
-    * validation 대상 객체
-```java
-@Data
-@Alias("demo")
-public class DemoVo {
-
-    @Min(value = 0, groups = Create.class)
-    private long id;
-
-    @NotNull(groups = Create.class)
-    private String name;
-
-
-    public DemoVo valueOf(DemoEntity demoEntity) {
-        this.id = demoEntity.getId();
-        this.name = demoEntity.getName();
-        return this;
-    }
-    
-}
-```  
-  
-  * Validation group Interface
-```java
-public interface CrudInterface {
-
-    interface Create { }
-
-    interface Update { }
-
-}
-```
-  
-  * Validation 사용
-```java
-    @PostMapping("")
-    public ResponseEntity<DemoVo> createEntity(@Validated(value = Create.class) DemoVo demoVo) {
-        demoVo = demoService.createEntity(demoVo);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity(demoVo, httpHeaders, HttpStatus.OK);
-    }
-```
-      
-* **참고 사항**
-  * @EnableWebMvc 사용 금지 -  Spring boot 자동 설정을 사용하지 못함
-  * WebMvcConfigurer 을 사용하여 MVC 커스텀 설정 권장
 
 
 ## 2. Spring Data JPA (hibernate 5.4.10.Final)
