@@ -37,8 +37,8 @@ public class SampleVo extends CommonVo {
     private String email1;
 
     // @Min, @Max annotation 으로 최소, 최대값을 지정한다.
-    @Min(value = 18, groups = CrudInterface.Create.class)
-    @Max(value = 30, groups = CrudInterface.Create.class)
+    @Min(value = 18)
+    @Max(value = 30)
     private int age;
 
     // 신용카드번호의 유효성을 판단한다.

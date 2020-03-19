@@ -13,11 +13,20 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.xml.ws.Response;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,7 +64,9 @@ public class SampleController {
     @ApiImplicitParams(value = {@ApiImplicitParam(name = "id", value = "조회할 아이디 값 ex) 1")})
     @TimeCheckerAspect
     public SampleVo findSample(@Valid SampleVo sampleVo) {
-        return sampleService.findSample(sampleVo);
+        sampleVo.setId(100);
+        return sampleVo;
+//        return sampleService.findSample(sampleVo);
     }
 
     @PutMapping("/{id}")
@@ -83,4 +94,29 @@ public class SampleController {
         return sampleService.deleteSample(sampleVo);
     }
 
+
+    @PostMapping("/file")
+    public ResponseEntity createFile(@RequestPart(name = "files") MultipartFile multipartFile) {
+        log.info("{}", multipartFile.getClass());
+        try {
+            multipartFile.transferTo(Paths.get("./" + multipartFile.getOriginalFilename()));
+        } catch (IOException e) {
+            throw new CommonException("io error", e);
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/file/find")
+    public ResponseEntity findFile() {
+
+        ResponseEntity entity = null;
+        try {
+            ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Paths.get("./originFileName")));
+            entity = new ResponseEntity(resource, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return entity;
+    }
 }

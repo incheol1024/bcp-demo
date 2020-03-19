@@ -96,12 +96,12 @@ public class WebConfig implements WebMvcConfigurer {
 }
 ```
 ----------------------------------------
-* Exception과 Validation  
+* **Exception과 Validation**  
     * 본 프로젝트의 Exception은 아래의 그림과 같이 처리 흐름도를 갖습니다.
    ![exception-proecss](/meta/img/exception-process.jpg)  
 
-* Exception 공통 처리 핸들러 
-   * CommonExceptionHandler (com.etoos.common.handler.CommonExceptionHandler)
+* **Exception 공통 처리 핸들러** 
+  * CommonExceptionHandler (com.etoos.common.handler.CommonExceptionHandler)
   * 요청 처리 과정에서 일어나는 모든 Exception을 아래의 핸들러에서 처리 합니다.
   * Exception에 관련된 응답 내용은 ResponseErrorVo 객체를 사용하며 Json 문자열로 변환되어 응답 합니다.
   * Validation과 관련된 Exception도 공통 Exception 핸들러에서 처리합니다.
@@ -157,8 +157,8 @@ public class ResponseErrorVo {
     Object message;
 }
 ```
-  
-* Validation 적용 Sample Class    
+      
+* **Validation 적용 Sample Class**    
 
 ```java
 @Data
@@ -198,10 +198,9 @@ public class SampleVo extends CommonVo {
     private String userAccount;
 
 }
-```  
-  
-* Validation 사용 Sample Method    
-
+```    
+    
+* **Validation 사용 Sample Method**    
 ```java
     @PostMapping("")
     public ResponseEntity<DemoVo> createEntity(@Valid DemoVo demoVo) {

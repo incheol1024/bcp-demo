@@ -1,7 +1,7 @@
 server:
-  port: 8080
-  address: ec2-13-125-109-194.ap-northeast-2.compute.amazonaws.com
-#  address: 127.0.0.1
+  port: 8081
+#  address: ec2-13-125-109-194.ap-northeast-2.compute.amazonaws.com
+  address: 127.0.0.1
 
 mybatis:
   mapper-locations: classpath:sql/mapper/**/*.xml
@@ -27,7 +27,7 @@ spring:
   h2:
     console:
       enabled: true
-      
+
   servlet:
     multipart:
       enabled: true
@@ -67,6 +67,8 @@ logging:
         type:
           descriptor:
             sql: TRACE
+      zalando:
+        logbook: TRACE
     jdbc.connection: WARN
     jdbc.sqlonly: WARN
     jdbc.sqltiming: DEBUG
@@ -91,12 +93,12 @@ datasource:
   postgres:
     default:
       driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: jdbc:postgresql://192.168.4.131:5432/postgres?currentSchema=bcp&stringtype=unspecified
-      username: postgres
-      password: postgres
-#      jdbc-url: jdbc:log4jdbc:postgresql://localhost:5432/testdb
-#      username: incheol
-#      password: pass
+#      jdbc-url: jdbc:postgresql://192.168.4.131:5432/postgres?currentSchema=bcp&stringtype=unspecified
+#      username: postgres
+#      password: postgres
+      jdbc-url: jdbc:log4jdbc:postgresql://localhost:5432/testdb
+      username: incheol
+      password: pass
 
     bcp-read:
       driver-class-name: org.postgresql.Driver
@@ -110,5 +112,8 @@ datasource:
       jdbc-url: jdbc:log4jdbc:postgresql://192.168.4.131:5432/postgres?currentSchema=bcp&stringtype=unspecified
       username: postgres
       password: ENC(uuR4e2zrXFN890ESpDl+6Z1+vXdsQtQv)
-      
-      
+
+
+logbook:
+  format:
+    style: http

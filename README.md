@@ -48,13 +48,8 @@
     
 # 2. Quick Start
  [1. Spring Web MVC 설정 보러 가기](/meta/doc/web-mvc.md)
+ [2. Mybatis 설정 보러 가기](/meta/doc/mybatis.md)
   
-
-# Spring Boot 2.2.4 (2020.02.12 기준 GA)
-
-​	**하위 스프링 관련 버전은 Spring Boot 2.2.4 버전의 부모 pom dependency를 기준으로 합니다.**
-
-
 
 
 
@@ -117,9 +112,7 @@
 
      
 
-## 3. Spring Mybais
- * Spring boot 환경에서의 설정 학습이 필요  
- **Dev profile에서 콘솔 및 로그에 쿼리가 디테일하고 예쁘게 나오게 하기** 
+
 
 
 
