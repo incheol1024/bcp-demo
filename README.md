@@ -1,3 +1,53 @@
+#1. 소개 
+  - 배치표와 관련된 프로젝트 공통 셋업 환경이며 아래와 같은 기술 스택 및 라이브러리를 사용합니다.
+   maven pom.xml에 기술한 의존성 목록을 나열한 것입니다.  
+   버전이 명시 되지 않은 것은 Spring boot 부모 dependency 버전을 따릅니다.
+  - 언어
+    - Java8 (Open JDK)
+  - 프레임워크 
+    - spring boot 2.2.4 
+    - spring-boot-starter-web
+    - spring-boot-starter-security
+    - spring-boot-security-test
+    - spring-boot-starter-aop
+    - spring-boot-starter-batch
+    - spring-boot-starter-cache
+    - spring-boot-starter-data-redis
+    - spring-boot-starter-test (exclude: jnuit-vintage-engine, junit)  
+    - mybatis-spring-boot-starter 2.1.1
+    - spring-boot-starter-data-jpa (일부 프로젝트만 적용)
+    - spring-boot-devtools
+    - spring-boot-configuration-processor
+    - spring-boot-autoconfigure-processor
+  - 라이브러리
+    - postgresql
+    - mssql-jdbc
+    - lombok
+    - junit-jupiter-api
+    - junit-platform-launcher
+    - janino 2.5.10
+    - springfox-swagger2 3.0.0-SNAPSHOT
+    - springfox-swagger-ui 3.0.0-SNAPSHOT
+    - springfox-bean-validators 3.0.0-SNAPSHOT
+    - springfox-swagger-simplified 3.0.0-SNAPSHOT
+    - apache commons-lang3
+    - jasypt-spring-boot-starter
+    - log4jdbc-log4j2-jdbc4.1
+    - logbook-spring-boot-starter 2.0.0
+    - logboot-json 2.0.0
+    - lucy-xss-servlet 2.0.0
+     
+  - 빌드 환경
+    - Maven 3.x.x
+    - jenkins (?)
+  - 레파지토리
+    - git
+   
+    
+    
+    
+  
+
 # Spring Boot 2.2.4 (2020.02.12 기준 GA)
 
 ​	**하위 스프링 관련 버전은 Spring Boot 2.2.4 버전의 부모 pom dependency를 기준으로 합니다.**
@@ -28,7 +78,7 @@
   | Interceptor        | 핸들러 Interceptor 설정                             |      |
   | CORS               | CORS 설정                                           |      |
   | Multipart Resolver | Mulipart Resolver 설정 (Default Standard Multipart) |      |
-  | Exception          | Exception 공통 처리 및 각 핸들러 별 처리            |      |
+  | Exception          | Exception 
   | Validation         | 핸들러 메서드 아규먼트 유효성 검증                  |      |
   | HATEOAS            | 헤이토스가 무엇인지??..                           |      |
   
