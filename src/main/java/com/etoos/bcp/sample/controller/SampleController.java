@@ -119,4 +119,10 @@ public class SampleController {
 
         return entity;
     }
+
+
+    @GetMapping("/nuxt")
+    public ResponseEntity<String> getNuxt(@RequestParam("name") String name) {
+        return ResponseEntity.ok("Hello " + name);
+    }
 }
