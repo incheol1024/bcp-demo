@@ -121,8 +121,11 @@ public class SampleController {
     }
 
 
+    static int number = 0;
     @GetMapping("/nuxt")
     public ResponseEntity<String> getNuxt(@RequestParam("name") String name) {
+        number++;
+        log.info(name + "  " +  number + " 조회" );
         return ResponseEntity.ok("Hello " + name);
     }
 }
