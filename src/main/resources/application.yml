@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
   address: ec2-13-125-109-194.ap-northeast-2.compute.amazonaws.com
 #  address: 127.0.0.1
 
