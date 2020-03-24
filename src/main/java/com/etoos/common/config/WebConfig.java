@@ -32,6 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://127.0.0.1:8080")
                 .allowedOrigins("http://localhost:8080")
                 .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("http://ec2-52-78-128-118.ap-northeast-2.compute.amazonaws.com")
                 .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
                 .allowCredentials(true);
     }
