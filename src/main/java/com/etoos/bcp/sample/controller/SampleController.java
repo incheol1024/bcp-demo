@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -121,6 +122,10 @@ public class SampleController {
     }
 
 
+
+
+    // 임시 테스트
+
     static int number = 0;
     @GetMapping("/nuxt")
     public ResponseEntity<String> getNuxt(@RequestParam("name") String name) {
@@ -128,4 +133,28 @@ public class SampleController {
         log.info(name + "  " +  number + " 조회" );
         return ResponseEntity.ok("Hello " + name);
     }
+
+    @GetMapping("/api")
+    public ResponseEntity<String> getApi(@RequestParam("api") String api) {
+        log.info(api);
+        return ResponseEntity.ok("call "  + api);
+    }
+
+    @PostMapping("/api")
+    public ResponseEntity<Sample> postApi(@RequestBody Sample sample) {
+        log.info("{}" ,sample);
+        sample.setName("success call server api");
+        return ResponseEntity.ok(sample);
+    }
+
+    @Data
+    static class Sample {
+        long id;
+        String name;
+    }
+
+
+
+
+
 }
